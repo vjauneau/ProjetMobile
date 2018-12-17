@@ -87,30 +87,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 builder.create().show();
-            } else {
+            }
+            else {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("PSEUDO", pseudo);
                 editor.putInt("taille", taille);
                 editor.apply();
                 Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-                /*intentGame = new Intent(MainActivity.this, ActivityGame.class);
-                intentGame.putExtra("taille",taille);
-                startActivity(intentGame);*/
-
+                intentGame = new Intent(MainActivity.this, game.class);
+                intentGame.putExtra("taille", taille);
+                startActivity(intentGame);
             }
-
         }
         else {
-            /*intentGame = new Intent(MainActivity.this, ActivityGame.class);
-            intentGame.putExtra("taille",taille);
-            startActivity(intentGame);*/
+            intentGame = new Intent(MainActivity.this, game.class);
+            intentGame.putExtra("taille", taille);
+            startActivity(intentGame);
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-
             }
-
         }
-
-
     }
-
