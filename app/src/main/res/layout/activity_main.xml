@@ -21,6 +21,14 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <Chronometer
+                android:id="@+id/simpleChronometer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="#f00"
+                android:textSize="25sp"/><!-- 25 sp size for displayed text of chronometer -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
