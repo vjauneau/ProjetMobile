@@ -1,6 +1,7 @@
 package com.example.usrlocal.projetmobile;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,11 @@ import android.widget.TextView;
 public class cardFragment extends Fragment {
 
     private boolean isShown;
-    private boolean isFind;
+    private boolean isFound;
     private int idImage;
 
     private TextView textCard = null;
+    private ImageView imageCard = null;
 
     public cardFragment() {
         // Required empty public constructor
@@ -24,20 +26,65 @@ public class cardFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_card, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_card, container, false);
+
+        textCard = (TextView) view.findViewById(R.id.text);
+        imageCard = (ImageView) view.findViewById(R.id.imageCard);
+
+        return view;
     }
 
-    public void setCard(int id_image){
-        isFind = false;
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        imageCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isShown){
+                    show();
+                    ((game) getActivity()).cardNotificationShown(cardFragment.this);
+                }
+            }
+        });
+    }
+
+    public void setUpCard(int id_image){
+        isFound = false;
         isShown = false;
         idImage = id_image;
 
-        textCard = (TextView) getView().findViewById(R.id.text);
         textCard.setText(String.valueOf(id_image));
+        imageCard.setImageResource(R.drawable.back_card);
 
         /*int id_image = this.getResources().getIdentifier(image_name , "drawable", getActivity().getPackageName());
         ImageView image = (ImageView) getView().findViewById(R.id.image);
         image.setImageResource(id_image);*/
+    }
+
+    public void show(){
+        isShown = true;
+        imageCard.setImageResource(R.drawable.lapin_assassin);
+    }
+
+    public void hide(){
+        isShown = false;
+        imageCard.setImageResource(R.drawable.back_card);
+        imageCard.setBackgroundColor(Color.WHITE);
+    }
+
+    public void setIncorrect(){
+        imageCard.setBackgroundColor(Color.RED);
+    }
+
+    public void setFind(){
+        isFound = true;
+        imageCard.setEnabled(false);
+        imageCard.setBackgroundColor(Color.GREEN);
+    }
+
+    public int getIdImage() {
+        return idImage;
     }
 }

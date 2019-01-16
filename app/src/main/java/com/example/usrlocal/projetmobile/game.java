@@ -16,20 +16,22 @@ import java.util.List;
 
 public class game extends AppCompatActivity {
 
-    private int nbCards;
+    private int pairesFound;
     private ArrayList<cardFragment> listCards = null;
+    private ArrayList<cardFragment> listShownCards = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        pairesFound = 0;
         listCards = new ArrayList<>();
+        listShownCards = new ArrayList<>();
 
         Intent intent = getIntent();
         if(intent != null) {
-            nbCards = intent.getIntExtra("taille", 0);
-            createCards(nbCards);
+            createCards(intent.getIntExtra("taille", 0));
         }
         else{
             Toast.makeText(this, "Oups tout ne s'est pas passé comme prévu, veuillez re-sélectionner le type de jeu.", Toast.LENGTH_LONG).show();
@@ -39,9 +41,8 @@ public class game extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        setCards();
+        setUpCards();
     }
-
 
     private void createCards(int nbCards) {
         int rowCard = 1;
@@ -57,7 +58,7 @@ public class game extends AppCompatActivity {
         ft.commit();
     }
 
-    private void setCards() {
+    private void setUpCards() {
 
         List<Integer> listImageId = new ArrayList<>();
         for(int i=0; i<listCards.size()/2; i++){
@@ -68,7 +69,54 @@ public class game extends AppCompatActivity {
         Collections.shuffle(listImageId);
 
         for(int i=0; i<listCards.size(); i++){
-            listCards.get(i).setCard(listImageId.get(i));
+            listCards.get(i).setUpCard(listImageId.get(i));
         }
+    }
+
+    public void cardNotificationShown(cardFragment card){
+
+        listShownCards.add(card);
+
+        if(listShownCards.size()==2){
+
+            cardFragment card0 = listShownCards.get(0);
+            cardFragment card1 = listShownCards.get(1);
+
+            if(card0.getIdImage() == card1.getIdImage()){
+
+                card0.setFind();
+                card1.setFind();
+                listShownCards.clear();
+
+                pairesFound++;
+                if(pairesFound == listCards.size()/2){
+                    gameFinished();
+                }
+            }
+            else{
+                card0.setIncorrect();
+                card1.setIncorrect();
+            }
+        }
+
+        if(listShownCards.size()==3){
+
+            //TODO : Select an already selected card
+            // See cardfragment cardNotification
+            
+            cardFragment card0 = listShownCards.get(0);
+            cardFragment card1 = listShownCards.get(1);
+
+            Toast.makeText(this, "same", Toast.LENGTH_LONG);
+            card0.hide();
+            card1.hide();
+            listShownCards.remove(card0);
+            listShownCards.remove(card1);
+
+        }
+    }
+
+    public void gameFinished(){
+        Toast.makeText(this, "Bravo partie terminée", Toast.LENGTH_LONG).show();
     }
 }
