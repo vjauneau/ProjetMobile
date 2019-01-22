@@ -1,8 +1,6 @@
 package com.example.usrlocal.projetmobile;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,6 +18,15 @@ public class cardFragment extends Fragment {
     private TextView textCard = null;
     private ImageView imageCard = null;
 
+    private static int[] listCardImages = {
+            R.drawable.card_1,
+            R.drawable.card_2,
+            R.drawable.card_3,
+            R.drawable.card_4,
+            R.drawable.card_5,
+            R.drawable.card_6,
+    };
+
     public cardFragment() {
         // Required empty public constructor
     }
@@ -29,8 +36,8 @@ public class cardFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_card, container, false);
 
-        textCard = (TextView) view.findViewById(R.id.text);
-        imageCard = (ImageView) view.findViewById(R.id.imageCard);
+        this.textCard = (TextView) view.findViewById(R.id.text);
+        this.imageCard = (ImageView) view.findViewById(R.id.imageCard);
 
         return view;
     }
@@ -39,24 +46,21 @@ public class cardFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        imageCard.setOnClickListener(new View.OnClickListener() {
+        this.imageCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isShown){
-                    show();
-                    ((game) getActivity()).cardNotificationShown(cardFragment.this);
-                }
+                ((game) getActivity()).cardNotificationClicked(cardFragment.this);
             }
         });
     }
 
     public void setUpCard(int id_image){
-        isFound = false;
-        isShown = false;
-        idImage = id_image;
+        this.isFound = false;
+        this.isShown = false;
+        this.idImage = id_image;
 
-        textCard.setText(String.valueOf(id_image));
-        imageCard.setImageResource(R.drawable.back_card);
+        this.textCard.setText(String.valueOf(id_image));
+        this.imageCard.setImageResource(R.drawable.back_card);
 
         /*int id_image = this.getResources().getIdentifier(image_name , "drawable", getActivity().getPackageName());
         ImageView image = (ImageView) getView().findViewById(R.id.image);
@@ -64,27 +68,27 @@ public class cardFragment extends Fragment {
     }
 
     public void show(){
-        isShown = true;
-        imageCard.setImageResource(R.drawable.lapin_assassin);
+        this.isShown = true;
+        this.imageCard.setImageResource(listCardImages[this.idImage]);
     }
 
     public void hide(){
-        isShown = false;
-        imageCard.setImageResource(R.drawable.back_card);
-        imageCard.setBackgroundColor(Color.WHITE);
+        this.isShown = false;
+        this.imageCard.setImageResource(R.drawable.back_card);
+        this.imageCard.setBackgroundColor(Color.WHITE);
     }
 
     public void setIncorrect(){
-        imageCard.setBackgroundColor(Color.RED);
+        this.imageCard.setBackgroundColor(Color.RED);
     }
 
     public void setFind(){
-        isFound = true;
-        imageCard.setEnabled(false);
-        imageCard.setBackgroundColor(Color.GREEN);
+        this.isFound = true;
+        this.imageCard.setEnabled(false);
+        this.imageCard.setBackgroundColor(Color.GREEN);
     }
 
     public int getIdImage() {
-        return idImage;
+        return this.idImage;
     }
 }

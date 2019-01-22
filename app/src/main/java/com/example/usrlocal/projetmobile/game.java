@@ -51,6 +51,7 @@ public class game extends AppCompatActivity {
         for(int i=0; i<nbCards ; i++) {
             cardFragment card = new cardFragment();
             listCards.add(card);
+
             int layoutId = getResources().getIdentifier("layoutCardRow" + String.valueOf(rowCard), "id", getPackageName());
             ft.add(layoutId, card);
             if((i+1)%4==0)rowCard ++;
@@ -73,50 +74,72 @@ public class game extends AppCompatActivity {
         }
     }
 
-    public void cardNotificationShown(cardFragment card){
+    public void cardNotificationClicked(cardFragment card){
 
-        listShownCards.add(card);
+        card.show();
 
-        if(listShownCards.size()==2){
+        cardFragment card0;
+        cardFragment card1;
 
-            cardFragment card0 = listShownCards.get(0);
-            cardFragment card1 = listShownCards.get(1);
+        switch(listShownCards.size()) {
 
-            if(card0.getIdImage() == card1.getIdImage()){
+            // 0 card already shown.
+            case 0:
+                listShownCards.add(card);
+                break;
 
-                card0.setFind();
-                card1.setFind();
+            // 1 card already shown (check pair).
+            case 1:
+                card0 = listShownCards.get(0);
+
+                // Check if the cards are the same.
+                if(card.getIdImage() == card0.getIdImage()){
+
+                    // Set cards found
+                    card.setFind();
+                    card0.setFind();
+                    listShownCards.clear();
+
+                    pairesFound++;
+
+                    // Check if game is finished
+                    if(pairesFound == listCards.size()/2){
+                        gameFinished();
+                    }
+                }
+                else{
+                    card.setIncorrect();
+                    card0.setIncorrect();
+
+                    listShownCards.add(card);
+                }
+
+                break;
+
+            // 2 cards already shown (wrong pair).
+            case 2:
+
+                // Hide cards and clear the list.
+                for(cardFragment c : listShownCards){
+                    c.hide();
+                }
                 listShownCards.clear();
 
-                pairesFound++;
-                if(pairesFound == listCards.size()/2){
-                    gameFinished();
-                }
-            }
-            else{
-                card0.setIncorrect();
-                card1.setIncorrect();
-            }
-        }
+                // If the card was already shown, re-show it.
+                card.show();
 
-        if(listShownCards.size()==3){
+                // Add the new card to the shown cards list.
+                listShownCards.add(card);
 
-            //TODO : Select an already selected card
-            // See cardfragment cardNotification
-            
-            cardFragment card0 = listShownCards.get(0);
-            cardFragment card1 = listShownCards.get(1);
+                break;
 
-            Toast.makeText(this, "same", Toast.LENGTH_LONG);
-            card0.hide();
-            card1.hide();
-            listShownCards.remove(card0);
-            listShownCards.remove(card1);
-
+            default:
+                Toast.makeText(this, "Erreur", Toast.LENGTH_LONG).show();
+                break;
         }
     }
 
-    public void gameFinished(){
+    private void gameFinished(){
         Toast.makeText(this, "Bravo partie terminée", Toast.LENGTH_LONG).show();
     }
 }
