@@ -18,9 +18,10 @@ import java.util.prefs.PreferenceChangeEvent;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button boutonGame8 = null;
-    Button boutonGame12 = null;
-    CheckBox cbEnregister = null;
+    Button boutonSimple = null;
+    Button boutonMedium = null;
+    Button boutonDifficult = null;
+
     EditText etPseudo = null;
     TextView tvBjr = null;
 
@@ -30,36 +31,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        boutonGame8 = (Button) findViewById(R.id.btnG8);
-        boutonGame12 = (Button) findViewById(R.id.btnG12);
-        cbEnregister = (CheckBox) findViewById(R.id.cbEnr);
+        boutonSimple = (Button) findViewById(R.id.btnSimple);
+        boutonMedium = (Button) findViewById(R.id.btnMedium);
+        boutonDifficult = (Button) findViewById(R.id.btnDifficult);
+
         etPseudo = (EditText) findViewById(R.id.etPseudo);
         tvBjr = (TextView) findViewById(R.id.tvBjr);
-        boutonGame8.setOnClickListener(new View.OnClickListener() {
+
+
+       /* boutonGame8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchGame(8);
 
             }
-        });
+        });*/
 
-        boutonGame12.setOnClickListener(new View.OnClickListener() {
+        /*boutonGame12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchGame(12);
             }
-        });
+        });*/
 
-        cbEnregister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(cbEnregister.isChecked()){
-                    etPseudo.setVisibility(View.VISIBLE);
-                }else {
-                    etPseudo.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
 
         int taille = prefs.getInt("taille",-1);
         String pseudo = prefs.getString("PSEUDO",null);
@@ -71,12 +65,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Lors du lancement de la partie si un pseudo est tapé on le recupère sinon on set attribue la valeur guest
+     * @param taille
+     */
     protected void launchGame(int taille) {
         Intent intentGame = null;
-        if (cbEnregister.isChecked()) {
+        //si l'ET n'est pas vide on récupère le pseudo
+        if (etPseudo.getText() != null) {
             String pseudo = etPseudo.getText().toString();
             Toast.makeText(getApplicationContext(), pseudo, Toast.LENGTH_SHORT).show();
-            if (pseudo.length() == 0) {
+
+            /*if (pseudo.length() == 0) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Veuillez entrer un pseudo pour l'enregistrement.");
                 builder.setCancelable(false);
@@ -87,20 +87,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 builder.create().show();
-            } else {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("PSEUDO", pseudo);
-                editor.putInt("taille", taille);
-                editor.apply();
-                Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
+            } else {*/
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("PSEUDO", pseudo);
+            editor.putInt("taille", taille);
+            editor.apply();
+            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
                 /*intentGame = new Intent(MainActivity.this, ActivityGame.class);
                 intentGame.putExtra("taille",taille);
                 startActivity(intentGame);*/
 
             }
-
-        }
         else {
             /*intentGame = new Intent(MainActivity.this, ActivityGame.class);
             intentGame.putExtra("taille",taille);
@@ -108,9 +106,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
 
             }
-
         }
-
-
     }
 
