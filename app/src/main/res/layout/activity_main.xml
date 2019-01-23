@@ -142,7 +142,7 @@
                     android:id="@+id/btnDifficult"
                     android:layout_width="148dp"
                     android:layout_height="match_parent"
-                    android:text="Difficil" />
+                    android:text="Difficile" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

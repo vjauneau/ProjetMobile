@@ -3,6 +3,7 @@ package com.example.usrlocal.projetmobile;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,13 +15,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.PreferenceChangeEvent;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button boutonSimple = null;
-    Button boutonMedium = null;
-    Button boutonDifficult = null;
+    Button btnSimple = null;
+    Button btnMedium = null;
+    Button btnDifficult = null;
+
+    List<Button> ListbtnDifficulty;
+
+    int selectedDifficulty = 0;
 
     EditText etPseudo = null;
     TextView tvBjr = null;
@@ -30,10 +37,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        ListbtnDifficulty = new ArrayList<>();
 
-        boutonSimple = (Button) findViewById(R.id.btnSimple);
-        boutonMedium = (Button) findViewById(R.id.btnMedium);
-        boutonDifficult = (Button) findViewById(R.id.btnDifficult);
+        btnSimple = (Button) findViewById(R.id.btnSimple);
+        btnMedium = (Button) findViewById(R.id.btnMedium);
+        btnDifficult = (Button) findViewById(R.id.btnDifficult);
+        ListbtnDifficulty.add(btnSimple);
+        ListbtnDifficulty.add(btnMedium);
+        ListbtnDifficulty.add(btnDifficult);
 
         etPseudo = (EditText) findViewById(R.id.etPseudo);
         tvBjr = (TextView) findViewById(R.id.tvBjr);
@@ -47,12 +58,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        /*boutonGame12.setOnClickListener(new View.OnClickListener() {
+        btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchGame(12);
+                btnSimple.setSelected(true);
+                btnMedium.setSelected(false);
+                btnDifficult.setSelected(false);
+                selectYourDifficultyLevel();
+                selectedDifficulty = 1;
             }
-        });*/
+        });
+
+        btnMedium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnSimple.setSelected(false);
+                btnMedium.setSelected(true);
+                btnDifficult.setSelected(false);
+                selectYourDifficultyLevel();
+                selectedDifficulty = 2;
+            }
+        });
+
+        btnDifficult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnSimple.setSelected(false);
+                btnMedium.setSelected(false);
+                btnDifficult.setSelected(true);
+                selectYourDifficultyLevel();
+                selectedDifficulty = 3;
+            }
+        });
 
 
         int taille = prefs.getInt("taille",-1);
@@ -105,6 +142,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intentGame);*/
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
 
+            }
+        }
+
+        protected void selectYourDifficultyLevel(){
+            for(Button b : ListbtnDifficulty){
+                if(b.isSelected())
+                {
+                    b.setTextColor(Color.RED);
+                }
+                else{
+                    b.setTextColor(Color.BLACK);
+                }
             }
         }
     }
