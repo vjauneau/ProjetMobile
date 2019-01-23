@@ -75,17 +75,16 @@ public class cardFragment extends Fragment {
     public void hide(){
         this.isShown = false;
         this.imageCard.setImageResource(R.drawable.back_card);
-        this.imageCard.setBackgroundColor(Color.WHITE);
     }
 
     public void setIncorrect(){
-        this.imageCard.setBackgroundColor(Color.RED);
+
     }
 
     public void setFind(){
         this.isFound = true;
         this.imageCard.setEnabled(false);
-        this.imageCard.setBackgroundColor(Color.GREEN);
+        this.imageCard.setImageAlpha(63);
     }
 
     public int getIdImage() {
