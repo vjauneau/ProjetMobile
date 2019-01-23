@@ -1,6 +1,7 @@
 package com.example.usrlocal.projetmobile;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -145,14 +146,23 @@ public class game extends AppCompatActivity {
     }
 
     private void moveSearch(){
+        // Change the rabbid image
         this.moveStatusImage.setImageResource(R.drawable.rabbid_search);
     }
 
     private void moveSuccess(){
+        // Play success sound
+        MediaPlayer.create(this, R.raw.wouhouh).start();
+
+        // Change the rabbid image
         this.moveStatusImage.setImageResource(R.drawable.rabbid_success);
     }
 
     private void moveFail(){
+        // Play fail sound
+        MediaPlayer.create(this, R.raw.lauch).start();
+
+        // Change the rabbid image
         this.moveStatusImage.setImageResource(R.drawable.rabbid_fail);
     }
 }
