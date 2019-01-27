@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *
+ */
 public class game extends AppCompatActivity {
 
     private int pairesFound;
@@ -27,22 +30,25 @@ public class game extends AppCompatActivity {
     private ArrayList<cardFragment> listCards = null;
     private ArrayList<cardFragment> listShownCards = null;
 
+    private MediaPlayer mpSoundEffect = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
         this.pairesFound = 0;
-        this.choiceStatusImage = (ImageView) findViewById(R.id.moveStatusImage);
-        this.choiceStatusText = (TextView) findViewById(R.id.moveStatusText);
+        this.choiceStatusImage = (ImageView) findViewById(R.id.choiceStatusImage);
+        this.choiceStatusText = (TextView) findViewById(R.id.choiceStatusText);
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
 
-        // Set the footer player name with the pseudo.
+        // Get the player pseudo from shar.
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String pseudo = preferences.getString("PSEUDO",null);
-        TextView pseudoTextView = (TextView)findViewById(R.id.userName);
 
+        // Display the player pseudo.
+        TextView pseudoTextView = (TextView)findViewById(R.id.userName);
         if(pseudo != null) pseudoTextView.setText("Joueur : " + pseudo);
         else pseudoTextView.setText("Joueur : Invité");
 
@@ -56,10 +62,14 @@ public class game extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        // Asign an image to the cards.
+        // Assign an image to each cards.
         if(!cardsSetUp)setUpCards();
     }
 
+    /**
+     * Create all card fragment needed for the game.
+     * @param nbCards : number of card of the game
+     */
     private void createCards(int nbCards) {
         int rowCard = 1;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -75,6 +85,9 @@ public class game extends AppCompatActivity {
         ft.commit();
     }
 
+    /**
+     * Assign an image to each cards.
+     */
     private void setUpCards() {
 
         List<Integer> listImageId = new ArrayList<>();
@@ -92,6 +105,10 @@ public class game extends AppCompatActivity {
         cardsSetUp = true;
     }
 
+    /**
+     * Update the game status when a card is clicked.
+     * @param card : cardFragment clicked
+     */
     public void cardNotificationClicked(cardFragment card){
 
         card.show();
@@ -127,8 +144,7 @@ public class game extends AppCompatActivity {
                         if(pairesFound == listCards.size()/2){
                             gameWin();
                         }
-
-                        choiceSuccess();
+                        else choiceSuccess();
                     }
                     else{
                         listShownCards.add(card);
@@ -162,6 +178,9 @@ public class game extends AppCompatActivity {
         }
     }
 
+    /**
+     * Show win modal and save game on statistics when the game is won.
+     */
     private void gameWin(){
 
         // Create winner dialog.
@@ -186,32 +205,62 @@ public class game extends AppCompatActivity {
         dialog.show();
 
         // Play win sound.
-        MediaPlayer.create(this, R.raw.lauch).start();
+        playSoundEffect(R.raw.win_sound);
 
         // Save statistics.
+
+        // number of game won / lost
+        // time of the game
+        // best time
     }
 
+    /**
+     * Update the display if the choice isn't made.
+     */
     private void choiceSearch(){
-        // Change the rabbid image
+        // Change the rabbid image.
         this.choiceStatusImage.setImageResource(R.drawable.rabbid_search);
         this.choiceStatusText.setText("Cherche bien !");
     }
 
+    /**
+     * Update the display and play a sound if the choice is successful.
+     */
     private void choiceSuccess(){
-        // Play success sound
-        MediaPlayer.create(this, R.raw.wouhouh).start();
+        // Play success sound.
+        playSoundEffect(R.raw.wouhouh);
 
-        // Change the rabbid image
+        // Change the rabbid image.
         this.choiceStatusImage.setImageResource(R.drawable.rabbid_success);
         this.choiceStatusText.setText("BRAVO !");
     }
 
+    /**
+     * Update the display and play a sound if the choice is wrong.
+     */
     private void choiceFail(){
-        // Play fail sound
-        MediaPlayer.create(this, R.raw.lauch).start();
+        // Play fail sound.
+        playSoundEffect(R.raw.lauch);
 
-        // Change the rabbid image
+        // Change the rabbid image.
         this.choiceStatusImage.setImageResource(R.drawable.rabbid_fail);
         this.choiceStatusText.setText("LOUPE !");
+    }
+
+    /**
+     * Play a sound effect.
+     * @param sound : sound effect to play
+     */
+    private void playSoundEffect(int sound){
+
+        // Reset the existing Media Player.
+        if (mpSoundEffect != null) {
+            mpSoundEffect.reset();
+            mpSoundEffect.release();
+        }
+
+        // Change the sound effect and play it.
+        mpSoundEffect = MediaPlayer.create(this, sound);
+        mpSoundEffect.start();
     }
 }
