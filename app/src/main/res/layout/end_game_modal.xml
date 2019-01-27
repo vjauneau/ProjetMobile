@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/modalTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -23,7 +23,7 @@
             android:textSize="36sp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/modalImage"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:layout_margin="20dp"

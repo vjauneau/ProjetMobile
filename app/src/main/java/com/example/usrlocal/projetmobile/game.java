@@ -3,6 +3,7 @@ package com.example.usrlocal.projetmobile;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -142,7 +143,7 @@ public class game extends AppCompatActivity {
 
                         // Check if game is finished
                         if(pairesFound == listCards.size()/2){
-                            gameWin();
+                            gameWon();
                         }
                         else choiceSuccess();
                     }
@@ -176,42 +177,6 @@ public class game extends AppCompatActivity {
                 Toast.makeText(this, "Erreur", Toast.LENGTH_LONG).show();
                 break;
         }
-    }
-
-    /**
-     * Show win modal and save game on statistics when the game is won.
-     */
-    private void gameWin(){
-
-        // Create winner dialog.
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.end_game_modal);
-
-        // Set the custom dialog components - text, image and button.
-        TextView text = (TextView) dialog.findViewById(R.id.textView);
-        text.setText("Victoire !");
-
-        ImageView image = (ImageView) dialog.findViewById(R.id.imageView);
-        image.setImageResource(R.drawable.rabbid_success);
-
-        Button dialogButton = (Button) dialog.findViewById(R.id.button);
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentGame = new Intent(game.this, MainActivity.class);
-                startActivity(intentGame);
-            }
-        });
-        dialog.show();
-
-        // Play win sound.
-        playSoundEffect(R.raw.win_sound);
-
-        // Save statistics.
-
-        // number of game won / lost
-        // time of the game
-        // best time
     }
 
     /**
@@ -262,5 +227,70 @@ public class game extends AppCompatActivity {
         // Change the sound effect and play it.
         mpSoundEffect = MediaPlayer.create(this, sound);
         mpSoundEffect.start();
+    }
+
+    /**
+     * Show win modal and save game on statistics when the game is won.
+     */
+    private void gameWon(){
+
+        // Create a winner modal.
+        setUpModal("Victoire !", R.drawable.rabbid_success);
+
+        // Play win sound.
+        playSoundEffect(R.raw.win_sound);
+
+        // Save statistics.
+
+        // number of game won / lost
+        // time of the game
+        // best time
+    }
+
+    /**
+     * Show lose modal and save game on statistics when the game is lose (only in chrono mode).
+     */
+    private void gameLost(){
+
+        // Create a lose modal.
+        setUpModal("Défaite !", R.drawable.rabbid_lose);
+
+        // Play lose sound.
+        playSoundEffect(R.raw.lose_sound);
+
+        // Save statistics.
+
+        // number of game won / lost
+        // time of the game
+        // best time
+    }
+
+    /**
+     * Set up the modal at the end of the game.
+     * @param title : text of the modal
+     * @param image : image of the modal
+     */
+    private void setUpModal(String title, int image){
+
+        // Create dialog.
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.end_game_modal);
+
+        // Set the custom dialog components - text, image and button.
+        TextView text = (TextView) dialog.findViewById(R.id.modalTitle);
+        text.setText(title);
+
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.modalImage);
+        imageView.setImageResource(image);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.button);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentGame = new Intent(game.this, MainActivity.class);
+                startActivity(intentGame);
+            }
+        });
+        dialog.show();
     }
 }
