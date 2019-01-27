@@ -1,11 +1,17 @@
 package com.example.usrlocal.projetmobile;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -15,7 +21,9 @@ import java.util.List;
 public class game extends AppCompatActivity {
 
     private int pairesFound;
-    private ImageView moveStatusImage = null;
+    private Boolean cardsSetUp = false;
+    private ImageView choiceStatusImage = null;
+    private TextView choiceStatusText = null;
     private ArrayList<cardFragment> listCards = null;
     private ArrayList<cardFragment> listShownCards = null;
 
@@ -25,23 +33,31 @@ public class game extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         this.pairesFound = 0;
-        this.moveStatusImage = (ImageView) findViewById(R.id.footerMoveStatusImage);
+        this.choiceStatusImage = (ImageView) findViewById(R.id.moveStatusImage);
+        this.choiceStatusText = (TextView) findViewById(R.id.moveStatusText);
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
 
+        // Set the footer player name with the pseudo.
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String pseudo = preferences.getString("PSEUDO",null);
+        TextView pseudoTextView = (TextView)findViewById(R.id.userName);
+
+        if(pseudo != null) pseudoTextView.setText("Joueur : " + pseudo);
+        else pseudoTextView.setText("Joueur : Invité");
+
+        // Get the game size and create the cards.
         Intent intent = getIntent();
-        if(intent != null) {
-            createCards(intent.getIntExtra("taille", 0));
-        }
-        else{
-            Toast.makeText(this, "Oups tout ne s'est pas passé comme prévu, veuillez re-sélectionner le type de jeu.", Toast.LENGTH_LONG).show();
-        }
+        if(intent != null) createCards(intent.getIntExtra("taille", 0));
+        else Toast.makeText(this, "Oups tout ne s'est pas passé comme prévu, veuillez re-sélectionner le type de jeu.", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setUpCards();
+
+        // Asign an image to the cards.
+        if(!cardsSetUp)setUpCards();
     }
 
     private void createCards(int nbCards) {
@@ -72,6 +88,8 @@ public class game extends AppCompatActivity {
         for(int i=0; i<listCards.size(); i++){
             listCards.get(i).setUpCard(listImageId.get(i));
         }
+
+        cardsSetUp = true;
     }
 
     public void cardNotificationClicked(cardFragment card){
@@ -86,33 +104,36 @@ public class game extends AppCompatActivity {
             // 0 card already shown.
             case 0:
                 listShownCards.add(card);
-                moveSearch();
+                choiceSearch();
                 break;
 
             // 1 card already shown (check pair).
             case 1:
+
                 card0 = listShownCards.get(0);
 
-                // Check if the cards are the same.
-                if(card.getIdImage() == card0.getIdImage()){
+                if(card != card0){
+                    // Check if the cards are the same.
+                    if(card.getIdImage() == card0.getIdImage()){
 
-                    // Set cards found
-                    card.setFind();
-                    card0.setFind();
-                    listShownCards.clear();
+                        // Set cards found
+                        card.setFind();
+                        card0.setFind();
+                        listShownCards.clear();
 
-                    pairesFound++;
+                        pairesFound++;
 
-                    // Check if game is finished
-                    if(pairesFound == listCards.size()/2){
-                        gameFinished();
+                        // Check if game is finished
+                        if(pairesFound == listCards.size()/2){
+                            gameWin();
+                        }
+
+                        choiceSuccess();
                     }
-
-                    moveSuccess();
-                }
-                else{
-                    listShownCards.add(card);
-                    moveFail();
+                    else{
+                        listShownCards.add(card);
+                        choiceFail();
+                    }
                 }
                 break;
 
@@ -131,7 +152,7 @@ public class game extends AppCompatActivity {
                 // Add the new card to the shown cards list.
                 listShownCards.add(card);
 
-                moveSearch();
+                choiceSearch();
 
                 break;
 
@@ -141,28 +162,56 @@ public class game extends AppCompatActivity {
         }
     }
 
-    private void gameFinished(){
-        Toast.makeText(this, "Bravo partie terminée", Toast.LENGTH_LONG).show();
+    private void gameWin(){
+
+        // Create winner dialog.
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.end_game_modal);
+
+        // Set the custom dialog components - text, image and button.
+        TextView text = (TextView) dialog.findViewById(R.id.textView);
+        text.setText("Victoire !");
+
+        ImageView image = (ImageView) dialog.findViewById(R.id.imageView);
+        image.setImageResource(R.drawable.rabbid_success);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.button);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentGame = new Intent(game.this, MainActivity.class);
+                startActivity(intentGame);
+            }
+        });
+        dialog.show();
+
+        // Play win sound.
+        MediaPlayer.create(this, R.raw.lauch).start();
+
+        // Save statistics.
     }
 
-    private void moveSearch(){
+    private void choiceSearch(){
         // Change the rabbid image
-        this.moveStatusImage.setImageResource(R.drawable.rabbid_search);
+        this.choiceStatusImage.setImageResource(R.drawable.rabbid_search);
+        this.choiceStatusText.setText("Cherche bien !");
     }
 
-    private void moveSuccess(){
+    private void choiceSuccess(){
         // Play success sound
         MediaPlayer.create(this, R.raw.wouhouh).start();
 
         // Change the rabbid image
-        this.moveStatusImage.setImageResource(R.drawable.rabbid_success);
+        this.choiceStatusImage.setImageResource(R.drawable.rabbid_success);
+        this.choiceStatusText.setText("BRAVO !");
     }
 
-    private void moveFail(){
+    private void choiceFail(){
         // Play fail sound
         MediaPlayer.create(this, R.raw.lauch).start();
 
         // Change the rabbid image
-        this.moveStatusImage.setImageResource(R.drawable.rabbid_fail);
+        this.choiceStatusImage.setImageResource(R.drawable.rabbid_fail);
+        this.choiceStatusText.setText("LOUPE !");
     }
 }

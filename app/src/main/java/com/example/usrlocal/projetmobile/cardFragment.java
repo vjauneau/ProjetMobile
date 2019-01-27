@@ -25,6 +25,8 @@ public class cardFragment extends Fragment {
             R.drawable.card_4,
             R.drawable.card_5,
             R.drawable.card_6,
+            R.drawable.card_7,
+            R.drawable.card_8,
     };
 
     public cardFragment() {
