@@ -198,7 +198,7 @@ public class game extends AppCompatActivity {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentGame = new Intent(game.this, MainActivity.class);
+                Intent intentGame = new Intent(game.this, MenuActivity.class);
                 startActivity(intentGame);
             }
         });
