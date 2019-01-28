@@ -239,6 +239,9 @@ public class game extends AppCompatActivity {
      */
     private void gameWon(){
 
+        // FORTEST
+        gameTime = 100;
+
         // Create a winner modal.
         setUpModal("Victoire !", R.drawable.rabbid_success);
 
@@ -246,10 +249,7 @@ public class game extends AppCompatActivity {
         playSoundEffect(R.raw.win_sound);
 
         // Save statistics.
-
-        // number of game won / lost
-        // time of the game
-        // best time
+        saveStats(true);
     }
 
     /**
@@ -264,10 +264,7 @@ public class game extends AppCompatActivity {
         playSoundEffect(R.raw.lose_sound);
 
         // Save statistics.
-
-        // number of game won / lost
-        // time of the game
-        // best time
+        saveStats(false);
     }
 
     /**
