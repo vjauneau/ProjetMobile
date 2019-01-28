@@ -19,14 +19,13 @@
 
         <activity android:name=".game"
             android:screenOrientation="portrait">
-
         </activity>
 
         <activity android:name=".HistoriqueActivity" />
-        <activity
-            android:name=".TimerActivity"
-            android:label="@string/title_activity_timer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity android:name=".StatisticActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 

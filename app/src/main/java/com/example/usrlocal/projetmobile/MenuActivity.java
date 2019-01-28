@@ -49,11 +49,13 @@ public class MenuActivity extends AppCompatActivity {
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnSimple.setSelected(true);
+                Intent intentGame = new Intent(MenuActivity.this, StatisticActivity.class);
+                startActivity(intentGame);
+                /*btnSimple.setSelected(true);
                 btnMedium.setSelected(false);
                 btnDifficult.setSelected(false);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 1;
+                selectedDifficulty = 1;*/
             }
         });
 

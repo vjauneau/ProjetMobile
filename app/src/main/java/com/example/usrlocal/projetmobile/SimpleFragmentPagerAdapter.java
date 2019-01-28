@@ -9,11 +9,21 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private Context context;
 
+    /**
+     * Constructeur of the FragmentPagerAdapter.
+     * @param context : context of the activity.
+     * @param fm : FragmentManager.
+     */
     public SimpleFragmentPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.context = context;
     }
 
+    /**
+     * Get the tab fragment.
+     * @param position : position of the tab fragment.
+     * @return Fragment : tab fragment.
+     */
     @Override
     public Fragment getItem(int position) {
         switch (position) {
@@ -24,11 +34,20 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    /**
+     * Get number of tab.
+     * @return int : number of tab.
+     */
     @Override
     public int getCount() {
         return 3;
     }
 
+    /**
+     * Get tab title.
+     * @param position : position of the tab fragment.
+     * @return CharSequence : Title of the tab fragment.
+     */
     @Override
     public CharSequence getPageTitle(int position) {
 
