@@ -49,13 +49,11 @@ public class MenuActivity extends AppCompatActivity {
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentGame = new Intent(MenuActivity.this, StatisticActivity.class);
-                startActivity(intentGame);
-                /*btnSimple.setSelected(true);
+                btnSimple.setSelected(true);
                 btnMedium.setSelected(false);
                 btnDifficult.setSelected(false);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 1;*/
+                selectedDifficulty = 1;
             }
         });
 
@@ -87,7 +85,7 @@ public class MenuActivity extends AppCompatActivity {
         if(taille != -1 && pseudo != null) {
             Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
             tvBjr.setText("Bonjour : "+pseudo+". Choisissez votre jeu.");
-            // launchGame(taille);
+            launchGame(taille);
         }
 
     }
@@ -109,19 +107,17 @@ public class MenuActivity extends AppCompatActivity {
             editor.putInt("taille", taille);
             editor.apply();
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-            /*intentGame = new Intent(MenuActivity.this, ActivityGame.class);
-             intentGame.putExtra("taille",taille);
-             startActivity(intentGame);*/
-
-            }
-        else {
-            /*intentGame = new Intent(MenuActivity.this, ActivityGame.class);
+            intentGame = new Intent(MenuActivity.this, game.class);
             intentGame.putExtra("taille",taille);
-            startActivity(intentGame);*/
-            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-
-            }
+            startActivity(intentGame);
         }
+        else {
+            intentGame = new Intent(MenuActivity.this, game.class);
+            intentGame.putExtra("taille",taille);
+            startActivity(intentGame);
+            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
+        }
+    }
 
         protected void selectYourDifficultyLevel(){
             for(Button b : ListbtnDifficulty){
