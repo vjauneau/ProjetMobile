@@ -25,9 +25,13 @@ import java.util.List;
 public class game extends AppCompatActivity {
 
     private int pairesFound;
+    private int gameSize;
+    private int gameTime;
     private Boolean cardsSetUp = false;
+    private String userName = null;
     private ImageView choiceStatusImage = null;
     private TextView choiceStatusText = null;
+    private TextView pseudoTextView = null;
     private ArrayList<cardFragment> listCards = null;
     private ArrayList<cardFragment> listShownCards = null;
 
@@ -41,21 +45,22 @@ public class game extends AppCompatActivity {
         this.pairesFound = 0;
         this.choiceStatusImage = (ImageView) findViewById(R.id.choiceStatusImage);
         this.choiceStatusText = (TextView) findViewById(R.id.choiceStatusText);
+        this.pseudoTextView = (TextView) findViewById(R.id.userName);
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
 
         // Get the player pseudo from shar.
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String pseudo = preferences.getString("PSEUDO",null);
+        userName = preferences.getString("PSEUDO",null);
 
         // Display the player pseudo.
-        TextView pseudoTextView = (TextView)findViewById(R.id.userName);
-        if(pseudo != null) pseudoTextView.setText("Joueur : " + pseudo);
+        if(userName != null) pseudoTextView.setText("Joueur : " + userName);
         else pseudoTextView.setText("Joueur : Invité");
 
         // Get the game size and create the cards.
         Intent intent = getIntent();
-        if(intent != null) createCards(intent.getIntExtra("taille", 0));
+        gameSize = intent.getIntExtra("taille", 0);
+        if(intent != null) createCards(gameSize);
         else Toast.makeText(this, "Oups tout ne s'est pas passé comme prévu, veuillez re-sélectionner le type de jeu.", Toast.LENGTH_LONG).show();
     }
 
@@ -292,5 +297,56 @@ public class game extends AppCompatActivity {
             }
         });
         dialog.show();
+    }
+
+    private void saveStats(Boolean gameWon){
+
+        String gameSize = String.valueOf(this.gameSize);
+
+        // User preferences.
+        SharedPreferences userPreferences = getSharedPreferences(userName, MODE_PRIVATE);
+
+        // Score board
+        SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if(gameWon){
+            // Had one won game.
+            userPreferences.edit().putInt("nbGameWON" + gameSize, userPreferences.getInt("nbGameWON" + gameSize, 0));
+
+            // Save user best time.
+            int bestTime = userPreferences.getInt("bestTime" + gameSize, 10000);
+            if(gameTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, gameTime);
+
+            // Update the score board.
+            int scorePosition = 0;
+            List<Integer> top5scores = new ArrayList<>();
+            List<String> top5players = new ArrayList<>();
+
+            // Get place place of the score in the score board.
+            for(int i=1; i<=5; i++){
+                int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
+                String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
+                if(gameTime < scoreTime)scorePosition = i;
+                top5scores.add(scoreTime);
+                top5players.add(player);
+            }
+
+            top5scores.add(scorePosition, gameTime);
+            top5players.add(scorePosition, userName);
+
+            // Update the score board.
+            for(int i=1; i<=5; i++){
+                if(top5players.get(i) != null){
+                    generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i));
+                    generalPreferences.edit().putString("time" + String.valueOf(i) + "_game" + gameSize, top5players.get(i));
+                }
+            }
+        }
+        else{
+            // Had one lost game.
+            userPreferences.edit().putInt("nbGameLOST" + gameSize, userPreferences.getInt("nbGameLOST" + gameSize, 0));
+        }
+
+        //String.format("%02d:%02d", pTime / 60, pTime % 60);
     }
 }
