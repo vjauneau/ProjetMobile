@@ -52,8 +52,7 @@ public class TabStatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tab_statistics, container, false);
-        this.gameSizeText = (TextView) view.findViewById(R.id.gameSize);
-        this.gameSizeText.setText(String.valueOf(getGameSize()));
+        //this.gameSizeText.setText(String.valueOf(getGameSize()));
 
         return view;
     }
