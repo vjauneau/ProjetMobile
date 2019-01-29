@@ -35,6 +35,8 @@ public class MenuActivity extends AppCompatActivity {
 
     private TextView tvBjr = null;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public class MenuActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ListbtnDifficulty = new ArrayList<>();
 
         btnSimple = (Button) findViewById(R.id.btnSimple);
@@ -121,11 +123,7 @@ public class MenuActivity extends AppCompatActivity {
                 //si l'ET n'est pas vide on récupère le pseudo.
                 if (etPseudo.getText() != null) {
                     String pseudo = etPseudo.getText().toString();
-
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("PSEUDO", pseudo);
-                    editor.apply();
+                    setPlayerPseudo(pseudo);
                 }
 
                 updatePseudoDisplay();
@@ -141,12 +139,17 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void updatePseudoDisplay(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String pseudo = prefs.getString("PSEUDO",null);
+        String pseudo = this.preferences.getString("PSEUDO",null);
         if(pseudo != null) {
             Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
             tvBjr.setText("Bonjour : " + pseudo);
         }
+    }
+
+    private void setPlayerPseudo(String pseudo){
+        SharedPreferences.Editor editor = this.preferences.edit();
+        editor.putString("PSEUDO", pseudo);
+        editor.apply();
     }
 
     /**
@@ -154,6 +157,11 @@ public class MenuActivity extends AppCompatActivity {
      * @param taille
      */
     protected void launchGame(int taille) {
+
+        // Default player.
+        if(this.preferences.getString("PSEUDO",null)==null) {
+            setPlayerPseudo("Invite");
+        }
         Intent intentGame = null;
 
         intentGame = new Intent(MenuActivity.this, game.class);
