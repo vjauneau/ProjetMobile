@@ -19,20 +19,21 @@ import java.util.List;
 
 public class MenuActivity extends AppCompatActivity {
 
-    Button btnSimple = null;
-    Button btnMedium = null;
-    Button btnDifficult = null;
-    Button btnPlay = null;
+    private Intent intentStat = null;
+    private Intent intentTopBoard = null;
 
-    Intent intentStat = null;
-    Intent intentTopBoard = null;
+    private Button btnSimple = null;
+    private Button btnMedium = null;
+    private Button btnDifficult = null;
+    private Button btnPlay = null;
+    private List<Button> ListbtnDifficulty;
 
-    List<Button> ListbtnDifficulty;
+    private int difficulty = 0;
 
-    int difficulty = 0;
+    private Button btnSavePseudo = null;
+    private EditText etPseudo = null;
 
-    EditText etPseudo = null;
-    TextView tvBjr = null;
+    private TextView tvBjr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class MenuActivity extends AppCompatActivity {
         btnMedium = (Button) findViewById(R.id.btnMedium);
         btnDifficult = (Button) findViewById(R.id.btnDifficult);
         btnPlay = (Button) findViewById(R.id.button4);
-
+        btnSavePseudo = (Button) findViewById(R.id.savePseudo);
 
         ListbtnDifficulty.add(btnSimple);
         ListbtnDifficulty.add(btnMedium);
@@ -59,7 +60,6 @@ public class MenuActivity extends AppCompatActivity {
 
         etPseudo = (EditText) findViewById(R.id.etPseudo);
         tvBjr = (TextView) findViewById(R.id.tvBjr);
-
 
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,34 +97,56 @@ public class MenuActivity extends AppCompatActivity {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (difficulty) {
-                    case 1:
-                        launchGame(8);
-                        break;
-                    case 2:
-                        launchGame(12);
-                        break;
+            switch (difficulty) {
+                case 1:
+                    launchGame(8);
+                    break;
+                case 2:
+                    launchGame(12);
+                    break;
+                case 3:
+                    launchGame(16);
+                    break;
 
-                    case 3:
-                        launchGame(16);
-                        break;
-
-                   /* case 0:
-                        Toast.makeText(MenuActivity., "Veuillez choisir un niveau de difficulté", Toast.LENGTH_LONG).show();*/
-
-                }
+               /* case 0:
+                    Toast.makeText(MenuActivity., "Veuillez choisir un niveau de difficulté", Toast.LENGTH_LONG).show();*/
             }
-            });
-
-
-        int taille = prefs.getInt("taille",-1);
-        String pseudo = prefs.getString("PSEUDO",null);
-        if(taille != -1 && pseudo != null) {
-            Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
-            tvBjr.setText("Bonjour : "+pseudo+"\n" + "Choisissez votre niveau de difficulté ! ");
-            // launchGame(taille);
         }
+        });
 
+        btnSavePseudo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //si l'ET n'est pas vide on récupère le pseudo.
+                if (etPseudo.getText() != null) {
+                    String pseudo = etPseudo.getText().toString();
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("PSEUDO", pseudo);
+                    editor.apply();
+                }
+
+                updatePseudoDisplay();
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        updatePseudoDisplay();
+    }
+
+    private void updatePseudoDisplay(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String pseudo = prefs.getString("PSEUDO",null);
+        if(pseudo != null) {
+            Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
+            tvBjr.setText("Bonjour : " + pseudo);
+        }
     }
 
     /**
@@ -133,66 +155,39 @@ public class MenuActivity extends AppCompatActivity {
      */
     protected void launchGame(int taille) {
         Intent intentGame = null;
-        //si l'ET n'est pas vide on récupère le pseudo
-        if (etPseudo.getText() != null) {
-            String pseudo = etPseudo.getText().toString();
-            Toast.makeText(getApplicationContext(), pseudo, Toast.LENGTH_SHORT).show();
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("PSEUDO", pseudo);
-            editor.putInt("taille", taille);
-            editor.apply();
-            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-            intentGame = new Intent(MenuActivity.this, game.class);
-             intentGame.putExtra("taille",taille);
-             startActivity(intentGame);
+        intentGame = new Intent(MenuActivity.this, game.class);
+        intentGame.putExtra("taille",taille);
+        startActivity(intentGame);
+    }
 
-            }
-        else {
-            intentGame = new Intent(MenuActivity.this, game.class);
-            intentGame.putExtra("taille",taille);
-            startActivity(intentGame);
-            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-
-            }
+    protected void selectYourDifficultyLevel(){
+        for(Button b : ListbtnDifficulty){
+            if(b.isSelected())b.setTextColor(Color.RED);
+            else b.setTextColor(Color.BLACK);
         }
+    }
 
-        protected void selectYourDifficultyLevel(){
-            for(Button b : ListbtnDifficulty){
-                if(b.isSelected())
-                {
-                    b.setTextColor(Color.RED);
-                }
-                else{
-                    b.setTextColor(Color.BLACK);
-                }
-            }
-        }
-
-        @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
         return true;
     }
-
 
     @Override
     public  boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
             case R.id.action_stats:
-                Toast.makeText(getApplicationContext(),"Stats",Toast.LENGTH_SHORT).show();
                 intentStat = new Intent(MenuActivity.this, StatisticActivity.class);
-                startActivity(intentStat);
                 break;
 
             case R.id.action_topBoard:
-                Toast.makeText(getApplicationContext(),"TopBoard",Toast.LENGTH_SHORT).show();
                 intentStat = new Intent(MenuActivity.this, HistoriqueActivity.class);
-                startActivity(intentStat);
                 break;
         }
+        startActivity(intentStat);
+
         return super.onOptionsItemSelected(item);
     }
 }
