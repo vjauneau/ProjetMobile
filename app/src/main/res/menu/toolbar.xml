@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/action_topBoard"
+        android:icon="@drawable/cup_champion_icon"
         android:orderInCategory="1"
-        android:icon="@drawable/medaille"
         android:title="topBoard"
         app:showAsAction="always" />
 
