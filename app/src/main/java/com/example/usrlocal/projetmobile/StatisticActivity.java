@@ -40,7 +40,7 @@ public class StatisticActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar, menu);
         menu.findItem(R.id.action_stats).setIcon(R.drawable.menu_mobile);
-        
+
         return true;
     }
 
