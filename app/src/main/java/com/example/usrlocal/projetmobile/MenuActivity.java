@@ -112,7 +112,7 @@ public class MenuActivity extends AppCompatActivity {
         if(taille != -1 && pseudo != null) {
             Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
             tvBjr.setText("Bonjour : "+pseudo+". Choisissez votre jeu.");
-            launchGame(taille);
+            // launchGame(taille);
         }
 
     }
@@ -135,18 +135,18 @@ public class MenuActivity extends AppCompatActivity {
             editor.apply();
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
             intentGame = new Intent(MenuActivity.this, game.class);
-
              intentGame.putExtra("taille",taille);
              startActivity(intentGame);
 
             }
-
+        else {
+            intentGame = new Intent(MenuActivity.this, game.class);
             intentGame.putExtra("taille",taille);
             startActivity(intentGame);
-        }
+            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
 
-        
-    }
+            }
+        }
 
         protected void selectYourDifficultyLevel(){
             for(Button b : ListbtnDifficulty){
