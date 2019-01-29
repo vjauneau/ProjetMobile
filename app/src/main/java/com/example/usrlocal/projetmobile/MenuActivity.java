@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,9 @@ public class MenuActivity extends AppCompatActivity {
     Button btnDifficult = null;
     Button btnPlay = null;
 
+    Intent intentStat = null;
+    Intent intentTopBoard = null;
+
     List<Button> ListbtnDifficulty;
 
     int difficulty = 0;
@@ -34,6 +38,12 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+        }
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ListbtnDifficulty = new ArrayList<>();
 
@@ -159,6 +169,32 @@ public class MenuActivity extends AppCompatActivity {
                 }
             }
         }
+
+        @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.toolbar,menu);
+        return true;
     }
+
+
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_stats:
+                Toast.makeText(getApplicationContext(),"Stats",Toast.LENGTH_SHORT).show();
+                intentStat = new Intent(MenuActivity.this, StatisticActivity.class);
+                startActivity(intentStat);
+                break;
+
+            case R.id.action_topBoard:
+                Toast.makeText(getApplicationContext(),"TopBoard",Toast.LENGTH_SHORT).show();
+                intentStat = new Intent(MenuActivity.this, HistoriqueActivity.class);
+                startActivity(intentStat);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}
 
 
