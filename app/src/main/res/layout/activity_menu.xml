@@ -8,6 +8,15 @@
     tools:context=".MenuActivity"
     android:background="@drawable/background">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.2"
+        android:background="#151231"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,24 +25,49 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="bottom"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="casual"
+                android:gravity="center"
                 android:text="Memory game"
-
+                android:textColor="#fff"
                 android:textSize="36sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvBjr"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:fontFamily="casual"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>
@@ -74,7 +108,9 @@
                     android:id="@+id/btnSimple"
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:text="Simple" />
+                    android:fontFamily="casual"
+                    android:text="Simple"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
@@ -108,7 +144,9 @@
                     android:id="@+id/btnMedium"
                     android:layout_width="148dp"
                     android:layout_height="match_parent"
-                    android:text="Medium" />
+                    android:fontFamily="casual"
+                    android:text="Medium"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
@@ -142,9 +180,31 @@
                     android:id="@+id/btnDifficult"
                     android:layout_width="148dp"
                     android:layout_height="match_parent"
-                    android:text="Difficile" />
+                    android:fontFamily="casual"
+                    android:text="Difficile"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:text="JOUER"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -156,19 +216,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvBjr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal">
@@ -179,32 +228,31 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:fontFamily="casual"
                 android:hint="Pseudo"
                 android:inputType="textPersonName"
+                android:textColor="#fff"
+                android:textStyle="bold"
                 android:visibility="visible" />
+
+            <Button
+                android:id="@+id/savePseudo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="casual"
+                android:text="Ok"
+                android:textStyle="bold" />
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="JOUER" />
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

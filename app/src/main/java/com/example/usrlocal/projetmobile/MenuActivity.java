@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,34 +19,47 @@ import java.util.List;
 
 public class MenuActivity extends AppCompatActivity {
 
-    Button btnSimple = null;
-    Button btnMedium = null;
-    Button btnDifficult = null;
+    private Intent intentStat = null;
+    private Intent intentTopBoard = null;
 
-    List<Button> ListbtnDifficulty;
+    private Button btnSimple = null;
+    private Button btnMedium = null;
+    private Button btnDifficult = null;
+    private Button btnPlay = null;
+    private List<Button> ListbtnDifficulty;
 
-    int selectedDifficulty = 0;
+    private int difficulty = 0;
 
-    EditText etPseudo = null;
-    TextView tvBjr = null;
+    private Button btnSavePseudo = null;
+    private EditText etPseudo = null;
+
+    private TextView tvBjr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+        }
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ListbtnDifficulty = new ArrayList<>();
 
         btnSimple = (Button) findViewById(R.id.btnSimple);
         btnMedium = (Button) findViewById(R.id.btnMedium);
         btnDifficult = (Button) findViewById(R.id.btnDifficult);
+        btnPlay = (Button) findViewById(R.id.button4);
+        btnSavePseudo = (Button) findViewById(R.id.savePseudo);
+
         ListbtnDifficulty.add(btnSimple);
         ListbtnDifficulty.add(btnMedium);
         ListbtnDifficulty.add(btnDifficult);
 
         etPseudo = (EditText) findViewById(R.id.etPseudo);
         tvBjr = (TextView) findViewById(R.id.tvBjr);
-
 
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +68,7 @@ public class MenuActivity extends AppCompatActivity {
                 btnMedium.setSelected(false);
                 btnDifficult.setSelected(false);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 1;
+                difficulty = 1;
             }
         });
 
@@ -64,7 +79,7 @@ public class MenuActivity extends AppCompatActivity {
                 btnMedium.setSelected(true);
                 btnDifficult.setSelected(false);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 2;
+                difficulty = 2;
             }
         });
 
@@ -75,19 +90,63 @@ public class MenuActivity extends AppCompatActivity {
                 btnMedium.setSelected(false);
                 btnDifficult.setSelected(true);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 3;
+                difficulty = 3;
             }
         });
 
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            switch (difficulty) {
+                case 1:
+                    launchGame(8);
+                    break;
+                case 2:
+                    launchGame(12);
+                    break;
+                case 3:
+                    launchGame(16);
+                    break;
 
-        int taille = prefs.getInt("taille",-1);
-        String pseudo = prefs.getString("PSEUDO",null);
-        if(taille != -1 && pseudo != null) {
-            Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
-            tvBjr.setText("Bonjour : "+pseudo+". Choisissez votre jeu.");
-            launchGame(taille);
+               /* case 0:
+                    Toast.makeText(MenuActivity., "Veuillez choisir un niveau de difficulté", Toast.LENGTH_LONG).show();*/
+            }
         }
+        });
 
+        btnSavePseudo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //si l'ET n'est pas vide on récupère le pseudo.
+                if (etPseudo.getText() != null) {
+                    String pseudo = etPseudo.getText().toString();
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("PSEUDO", pseudo);
+                    editor.apply();
+                }
+
+                updatePseudoDisplay();
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        updatePseudoDisplay();
+    }
+
+    private void updatePseudoDisplay(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String pseudo = prefs.getString("PSEUDO",null);
+        if(pseudo != null) {
+            Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
+            tvBjr.setText("Bonjour : " + pseudo);
+        }
     }
 
     /**
@@ -96,39 +155,41 @@ public class MenuActivity extends AppCompatActivity {
      */
     protected void launchGame(int taille) {
         Intent intentGame = null;
-        //si l'ET n'est pas vide on récupère le pseudo
-        if (etPseudo.getText() != null) {
-            String pseudo = etPseudo.getText().toString();
-            Toast.makeText(getApplicationContext(), pseudo, Toast.LENGTH_SHORT).show();
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("PSEUDO", pseudo);
-            editor.putInt("taille", taille);
-            editor.apply();
-            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-            intentGame = new Intent(MenuActivity.this, game.class);
-            intentGame.putExtra("taille",taille);
-            startActivity(intentGame);
-        }
-        else {
-            intentGame = new Intent(MenuActivity.this, game.class);
-            intentGame.putExtra("taille",taille);
-            startActivity(intentGame);
-            Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
+        intentGame = new Intent(MenuActivity.this, game.class);
+        intentGame.putExtra("taille",taille);
+        startActivity(intentGame);
+    }
+
+    protected void selectYourDifficultyLevel(){
+        for(Button b : ListbtnDifficulty){
+            if(b.isSelected())b.setTextColor(Color.RED);
+            else b.setTextColor(Color.BLACK);
         }
     }
 
-        protected void selectYourDifficultyLevel(){
-            for(Button b : ListbtnDifficulty){
-                if(b.isSelected())
-                {
-                    b.setTextColor(Color.RED);
-                }
-                else{
-                    b.setTextColor(Color.BLACK);
-                }
-            }
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.toolbar,menu);
+        return true;
     }
+
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_stats:
+                intentStat = new Intent(MenuActivity.this, StatisticActivity.class);
+                break;
+
+            case R.id.action_topBoard:
+                intentStat = new Intent(MenuActivity.this, HistoriqueActivity.class);
+                break;
+        }
+        startActivity(intentStat);
+
+        return super.onOptionsItemSelected(item);
+    }
+}
+
 
