@@ -111,7 +111,7 @@ public class MenuActivity extends AppCompatActivity {
         String pseudo = prefs.getString("PSEUDO",null);
         if(taille != -1 && pseudo != null) {
             Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
-            tvBjr.setText("Bonjour : "+pseudo+". Choisissez votre jeu.");
+            tvBjr.setText("Bonjour : "+pseudo+"\n" + "Choisissez votre niveau de difficulté ! ");
             // launchGame(taille);
         }
 
