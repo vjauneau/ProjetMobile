@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MenuActivity">
+            android:screenOrientation="portrait"
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,14 +20,13 @@
 
         <activity android:name=".game"
             android:screenOrientation="portrait">
-
         </activity>
 
         <activity android:name=".HistoriqueActivity" />
-        <activity
-            android:name=".TimerActivity"
-            android:label="@string/title_activity_timer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity android:name=".StatisticActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 
