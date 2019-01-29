@@ -76,7 +76,15 @@ public class TabStatisticsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String pseudo;
+        int gameSize = getGameSize();
+
+        // Score board
+        SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        pseudo = generalPreferences.getString("PSEUDO",null);
+
+        // User preferences.
+        SharedPreferences userPreferences = getActivity().getSharedPreferences(pseudo, Context.MODE_PRIVATE);
 
         // Set difficulty icon.
         switch (getGameSize()) {
@@ -92,8 +100,13 @@ public class TabStatisticsFragment extends Fragment {
         }
 
         // Set player name.
-        this.pseudoText.setText(preferences.getString("PSEUDO",null));
+        this.pseudoText.setText(pseudo);
 
-        
+        // Set statistics.
+        int gameWON = userPreferences.getInt("nbGameWON" + String.valueOf(gameSize), 0);
+        int gameLOST = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
+        int nbGames = gameLOST + gameWON;
+        this.nbGamesText.setText(String.valueOf(nbGames));
+        if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100));
     }
 }
