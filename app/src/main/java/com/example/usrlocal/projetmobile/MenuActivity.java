@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,10 +21,11 @@ public class MenuActivity extends AppCompatActivity {
     Button btnSimple = null;
     Button btnMedium = null;
     Button btnDifficult = null;
+    Button btnPlay = null;
 
     List<Button> ListbtnDifficulty;
 
-    int selectedDifficulty = 0;
+    int difficulty = 0;
 
     EditText etPseudo = null;
     TextView tvBjr = null;
@@ -38,6 +40,9 @@ public class MenuActivity extends AppCompatActivity {
         btnSimple = (Button) findViewById(R.id.btnSimple);
         btnMedium = (Button) findViewById(R.id.btnMedium);
         btnDifficult = (Button) findViewById(R.id.btnDifficult);
+        btnPlay = (Button) findViewById(R.id.button4);
+
+
         ListbtnDifficulty.add(btnSimple);
         ListbtnDifficulty.add(btnMedium);
         ListbtnDifficulty.add(btnDifficult);
@@ -53,7 +58,7 @@ public class MenuActivity extends AppCompatActivity {
                 btnMedium.setSelected(false);
                 btnDifficult.setSelected(false);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 1;
+                difficulty = 1;
             }
         });
 
@@ -64,7 +69,7 @@ public class MenuActivity extends AppCompatActivity {
                 btnMedium.setSelected(true);
                 btnDifficult.setSelected(false);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 2;
+                difficulty = 2;
             }
         });
 
@@ -75,9 +80,31 @@ public class MenuActivity extends AppCompatActivity {
                 btnMedium.setSelected(false);
                 btnDifficult.setSelected(true);
                 selectYourDifficultyLevel();
-                selectedDifficulty = 3;
+                difficulty = 3;
             }
         });
+
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (difficulty) {
+                    case 1:
+                        launchGame(8);
+                        break;
+                    case 2:
+                        launchGame(12);
+                        break;
+
+                    case 3:
+                        launchGame(16);
+                        break;
+
+                   /* case 0:
+                        Toast.makeText(MenuActivity., "Veuillez choisir un niveau de difficulté", Toast.LENGTH_LONG).show();*/
+
+                }
+            }
+            });
 
 
         int taille = prefs.getInt("taille",-1);
@@ -107,15 +134,15 @@ public class MenuActivity extends AppCompatActivity {
             editor.putInt("taille", taille);
             editor.apply();
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
-            /*intentGame = new Intent(MenuActivity.this, ActivityGame.class);
+            intentGame = new Intent(MenuActivity.this, game.class);
              intentGame.putExtra("taille",taille);
-             startActivity(intentGame);*/
+             startActivity(intentGame);
 
             }
         else {
-            /*intentGame = new Intent(MenuActivity.this, ActivityGame.class);
+            intentGame = new Intent(MenuActivity.this, game.class);
             intentGame.putExtra("taille",taille);
-            startActivity(intentGame);*/
+            startActivity(intentGame);
             Toast.makeText(getApplicationContext(), "game : " + taille, Toast.LENGTH_SHORT).show();
 
             }
@@ -133,4 +160,5 @@ public class MenuActivity extends AppCompatActivity {
             }
         }
     }
+
 
