@@ -119,10 +119,8 @@ public class TabHistoriqueFragment extends Fragment {
             int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
             String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
             if(player != null){
-                Log.d("histo", player);
-                Log.d("histo", String.valueOf(scoreTime) + "sec");
                 this.players.get(i-1).setText(player);
-                this.times.get(i-1).setText(String.valueOf(scoreTime) + "sec");
+                this.times.get(i-1).setText(String.valueOf(scoreTime) + "s");
             }
 
         }
