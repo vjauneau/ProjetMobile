@@ -61,7 +61,6 @@ public class TabStatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tab_statistics, container, false);
-        //this.gameSizeText.setText(String.valueOf(getGameSize()));
 
         this.difficultyIcon = (ImageView) view.findViewById(R.id.difficultyIcon);
         this.pseudoText = (TextView) view.findViewById(R.id.pseudo);
@@ -107,6 +106,6 @@ public class TabStatisticsFragment extends Fragment {
         int gameLOST = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
         int nbGames = gameLOST + gameWON;
         this.nbGamesText.setText(String.valueOf(nbGames));
-        if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100));
+        if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100) + "%");
     }
 }

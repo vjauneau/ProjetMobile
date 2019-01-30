@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -95,7 +96,7 @@ public class game extends AppCompatActivity {
      * Assign an image to each cards.
      */
     private void setUpCards() {
-
+        
         List<Integer> listImageId = new ArrayList<>();
         for(int i=0; i<listCards.size()/2; i++){
             listImageId.add(i);
@@ -296,6 +297,9 @@ public class game extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Save the player statistics.
+     */
     private void saveStats(Boolean gameWon){
 
         String gameSize = String.valueOf(this.gameSize);
@@ -303,47 +307,51 @@ public class game extends AppCompatActivity {
         // User preferences.
         SharedPreferences userPreferences = getSharedPreferences(userName, MODE_PRIVATE);
 
-        // Score board
-        SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         if(gameWon){
             // Had one won game.
-            userPreferences.edit().putInt("nbGameWON" + gameSize, userPreferences.getInt("nbGameWON" + gameSize, 0));
+            userPreferences.edit().putInt("nbGameWON" + gameSize, userPreferences.getInt("nbGameWON" + gameSize, 0)+1).apply();
 
             // Save user best time.
             int bestTime = userPreferences.getInt("bestTime" + gameSize, 10000);
-            if(gameTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, gameTime);
+            if(gameTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, gameTime).apply();
 
-            // Update the score board.
-            int scorePosition = 0;
-            List<Integer> top5scores = new ArrayList<>();
-            List<String> top5players = new ArrayList<>();
-
-            // Get place place of the score in the score board.
-            for(int i=1; i<=5; i++){
-                int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
-                String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
-                if(gameTime < scoreTime)scorePosition = i;
-                top5scores.add(scoreTime);
-                top5players.add(player);
-            }
-
-            top5scores.add(scorePosition, gameTime);
-            top5players.add(scorePosition, userName);
-
-            // Update the score board.
-            for(int i=1; i<=5; i++){
-                if(top5players.get(i) != null){
-                    generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i));
-                    generalPreferences.edit().putString("time" + String.valueOf(i) + "_game" + gameSize, top5players.get(i));
-                }
-            }
+            saveScoreBoard();
         }
         else{
             // Had one lost game.
-            userPreferences.edit().putInt("nbGameLOST" + gameSize, userPreferences.getInt("nbGameLOST" + gameSize, 0));
+            userPreferences.edit().putInt("nbGameLost" + gameSize, userPreferences.getInt("nbGameLost" + gameSize, 0)+1).apply();
+        }
+    }
+
+    /**
+     * Save the time in the score board if in top 5.
+     */
+    private void saveScoreBoard(){
+
+        int scorePosition = 0;
+        List<Integer> top5scores = new ArrayList<>();
+        List<String> top5players = new ArrayList<>();
+
+        SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        // Get place place of the score in the score board.
+        for(int i=1; i<=5; i++){
+            int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
+            String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
+            if(gameTime < scoreTime)scorePosition = i;
+            top5scores.add(scoreTime);
+            top5players.add(player);
         }
 
-        //String.format("%02d:%02d", pTime / 60, pTime % 60);
+        top5scores.add(scorePosition, gameTime);
+        top5players.add(scorePosition, userName);
+
+        // Update the score board.
+        for(int i=1; i<=5; i++){
+            if(top5players.get(i) != null){
+                generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i));
+                generalPreferences.edit().putString("time" + String.valueOf(i) + "_game" + gameSize, top5players.get(i));
+            }
+        }
     }
 }
