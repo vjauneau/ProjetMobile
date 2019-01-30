@@ -314,6 +314,7 @@ public class game extends AppCompatActivity {
             int bestTime = userPreferences.getInt("bestTime" + gameSize, 10000);
             if(gameTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, gameTime).apply();
 
+            // Save the score in score board.
             saveScoreBoard();
         }
         else{

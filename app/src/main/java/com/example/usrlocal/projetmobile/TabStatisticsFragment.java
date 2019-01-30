@@ -101,16 +101,19 @@ public class TabStatisticsFragment extends Fragment {
         // Set player name.
         this.pseudoText.setText(pseudo);
 
-        // Set statistics.
+        // Set player statistics.
         int gameWON = userPreferences.getInt("nbGameWON" + String.valueOf(gameSize), 0);
         int gameLOST = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
         int nbGames = gameLOST + gameWON;
         this.nbGamesText.setText("Parties jouées : " + String.valueOf(nbGames));
-        if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100) + "%");
-        else this.perCentWinText.setText("Aucune partie jouée");
 
-        int bestTime = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
-        if(bestTime != 0)this.perCentWinText.setText(String.valueOf(bestTime) + " secondes");
+        if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100) + "% de victoire");
+        else this.perCentWinText.setText("--%");
+
+        // Set player best time.
+        int bestTime = userPreferences.getInt("bestTime" + String.valueOf(gameSize), 0);
+
+        if(bestTime != 0)this.bestTimeText.setText(String.valueOf(bestTime) + " secondes");
         else this.bestTimeText.setText("Aucun temps");
     }
 }

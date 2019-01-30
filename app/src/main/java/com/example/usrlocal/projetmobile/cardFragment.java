@@ -11,13 +11,12 @@ import android.widget.TextView;
 
 public class cardFragment extends Fragment {
 
-    private boolean isShown;
-    private boolean isFound;
     private int idImage;
 
     private TextView textCard = null;
     private ImageView imageCard = null;
 
+    // List of cards.
     private static int[] listCardImages = {
             R.drawable.card_1,
             R.drawable.card_2,
@@ -56,39 +55,46 @@ public class cardFragment extends Fragment {
         });
     }
 
+    /**
+     * SetUp the card status and image id.
+     * @param id_image : image id.
+     */
     public void setUpCard(int id_image){
-        this.isFound = false;
-        this.isShown = false;
         this.idImage = id_image;
-
         this.textCard.setText(String.valueOf(id_image));
         this.imageCard.setImageResource(R.drawable.back_card);
-
-        /*int id_image = this.getResources().getIdentifier(image_name , "drawable", getActivity().getPackageName());
-        ImageView image = (ImageView) getView().findViewById(R.id.image);
-        image.setImageResource(id_image);*/
     }
 
+    /**
+     * Set card as shown.
+     */
     public void show(){
-        this.isShown = true;
+        // Show card image.
         this.imageCard.setImageResource(listCardImages[this.idImage]);
     }
 
+    /**
+     * Set card as hidden.
+     */
     public void hide(){
-        this.isShown = false;
+        // Show back card image.
         this.imageCard.setImageResource(R.drawable.back_card);
     }
 
-    public void setIncorrect(){
-
-    }
-
+    /**
+     * Set card as found.
+     */
     public void setFind(){
-        this.isFound = true;
+        // Click disable on card.
         this.imageCard.setEnabled(false);
+        // put gray filter on the card image.
         this.imageCard.setImageAlpha(63);
     }
 
+    /**
+     * Get card image id.
+     * @return int : image id.
+     */
     public int getIdImage() {
         return this.idImage;
     }
