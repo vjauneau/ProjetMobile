@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
+public class SimpleFragmentPagerHistorique  extends FragmentPagerAdapter {
 
     private Context context;
 
@@ -14,7 +14,7 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
      * @param context : context of the activity.
      * @param fm : FragmentManager.
      */
-    public SimpleFragmentPagerAdapter(Context context, FragmentManager fm) {
+    public SimpleFragmentPagerHistorique(Context context, FragmentManager fm) {
         super(fm);
         this.context = context;
     }
@@ -27,9 +27,9 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return TabStatisticsFragment.newInstance(8);
-            case 1: return TabStatisticsFragment.newInstance(12);
-            case 2: return TabStatisticsFragment.newInstance(16);
+            case 0: return TabHistoriqueFragment.newInstance(8);
+            case 1: return TabHistoriqueFragment.newInstance(12);
+            case 2: return TabHistoriqueFragment.newInstance(16);
             default: return null;
         }
     }

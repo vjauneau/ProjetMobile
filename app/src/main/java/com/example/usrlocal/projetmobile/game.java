@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- */
 public class game extends AppCompatActivity {
 
     private int pairesFound;
@@ -291,6 +288,7 @@ public class game extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentGame = new Intent(game.this, MenuActivity.class);
                 startActivity(intentGame);
+                game.this.finish();
             }
         });
         dialog.show();
@@ -349,8 +347,8 @@ public class game extends AppCompatActivity {
         // Update the score board.
         for(int i=1; i<=5; i++){
             if(top5players.get(i) != null){
-                generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i));
-                generalPreferences.edit().putString("time" + String.valueOf(i) + "_game" + gameSize, top5players.get(i));
+                generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i)).apply();
+                generalPreferences.edit().putString("player" + String.valueOf(i) + "_game" + gameSize, top5players.get(i)).apply();
             }
         }
     }

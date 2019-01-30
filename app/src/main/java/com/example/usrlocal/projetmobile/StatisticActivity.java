@@ -7,13 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 public class StatisticActivity extends AppCompatActivity {
 
     private ViewPager viewPager = null;
     private TabLayout tableLayout = null;
-    private SimpleFragmentPagerAdapter adapter;
+    private SimpleFragmentPagerStatistic adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +29,7 @@ public class StatisticActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        adapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
+        adapter = new SimpleFragmentPagerStatistic(this, getSupportFragmentManager());
         viewPager.setOffscreenPageLimit(adapter.getCount()-1);
         viewPager.setAdapter(adapter);
         tableLayout.setupWithViewPager(viewPager);
@@ -60,6 +59,7 @@ public class StatisticActivity extends AppCompatActivity {
                 break;
         }
         startActivity(intentStat);
+        this.finish();
 
         return super.onOptionsItemSelected(item);
     }

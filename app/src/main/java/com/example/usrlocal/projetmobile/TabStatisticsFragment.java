@@ -21,7 +21,6 @@ import java.util.Arrays;
 
 public class TabStatisticsFragment extends Fragment {
 
-    private int gameSize = 0;
     private TextView gameSizeText = null;
     private View view;
 
