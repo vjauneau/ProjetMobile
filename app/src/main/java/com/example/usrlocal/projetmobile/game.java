@@ -35,6 +35,7 @@ public class game extends AppCompatActivity {
     private TextView choiceStatusText = null;
     private TextView pseudoTextView = null;
     private int currentTime;
+    private int newBestTime;
 
     private Boolean end = false;
 
@@ -261,12 +262,19 @@ public class game extends AppCompatActivity {
      */
     private void gameWon(){
 
-        // Create a winner modal.
-
+        //Timer Stop
         timer.cancel(true);
-        temps.setText(""+timer.getCurrentTime());
 
-        //setUpModal("Victoire !", R.drawable.rabbid_success);
+        //Time recovering
+
+        // Pour test ! ;)
+        //temps.setText(""+timer.getCurrentTime());
+
+        newBestTime = timer.getCurrentTime();
+
+
+        // Create a winner modal.
+        setUpModal("Victoire !", R.drawable.rabbid_success);
 
         // Play win sound.
         playSoundEffect(R.raw.win_sound);
@@ -282,14 +290,13 @@ public class game extends AppCompatActivity {
 
         // Create a lose modal.
 
-        temps.setText(""+timer.getCurrentTime());
-            //setUpModal("Défaite !", R.drawable.rabbid_lose);
+        setUpModal("Défaite !", R.drawable.rabbid_lose);
 
-            // Play lose sound.
-            playSoundEffect(R.raw.lose_sound);
+        // Play lose sound.
+        playSoundEffect(R.raw.lose_sound);
 
-            // Save statistics.
-            saveStats(false);
+        // Save statistics.
+        saveStats(false);
         }
 
 
@@ -340,7 +347,7 @@ public class game extends AppCompatActivity {
 
             // Save user best time.
             int bestTime = userPreferences.getInt("bestTime" + gameSize, 10000);
-            if(gameTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, gameTime).apply();
+            if(newBestTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, newBestTime).apply();
 
             // Save the score in score board.
             saveScoreBoard();
@@ -366,12 +373,12 @@ public class game extends AppCompatActivity {
         for(int i=1; i<=5; i++){
             int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
             String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
-            if(gameTime < scoreTime)scorePosition = i;
+            if(newBestTime < scoreTime)scorePosition = i;
             top5scores.add(scoreTime);
             top5players.add(player);
         }
 
-        top5scores.add(scorePosition, gameTime);
+        top5scores.add(scorePosition, newBestTime);
         top5players.add(scorePosition, userName);
 
         // Update the score board.
@@ -383,19 +390,26 @@ public class game extends AppCompatActivity {
         }
     }
 
+    /**
+     * Définition du timer
+     */
     private class Timer extends AsyncTask<Void, Integer, Void> {
 
-
+        //progressBar initialisation
         @Override
          protected void onPreExecute() {
              progressBar.setProgress(0);
          }
+
+         //Function to print progressBar evolution
          @Override
          protected void onProgressUpdate(Integer... values) {
              super.onProgressUpdate(values);
              progressBar.setProgress(values[0]);
 
          }
+
+         //Timer (40s)
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i <= 100; i++) {
@@ -404,7 +418,9 @@ public class game extends AppCompatActivity {
                     break;
                 try {
                     Thread.sleep(gameTime);
-                    currentTime = ((400*i)/100)/10;
+
+                    //Return the current time in second
+                    currentTime = ((gameTime*i)/100)/10;
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -418,6 +434,7 @@ public class game extends AppCompatActivity {
             return currentTime;
         }
 
+        //When time is over
         @Override
         protected void onPostExecute(Void result) {
 
