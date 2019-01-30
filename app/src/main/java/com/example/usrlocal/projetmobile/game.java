@@ -5,16 +5,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,16 +30,28 @@ public class game extends AppCompatActivity {
 
     private int pairesFound;
     private int gameSize;
-    private int gameTime;
+    private int gameTime = 400;
     private Boolean cardsSetUp = false;
     private String userName = null;
     private ImageView choiceStatusImage = null;
     private TextView choiceStatusText = null;
     private TextView pseudoTextView = null;
+    private int currentTime;
+
+    private Boolean end = false;
+
+    private EditText temps = null;
+
+    private ProgressBar progressBar = null;
     private ArrayList<cardFragment> listCards = null;
     private ArrayList<cardFragment> listShownCards = null;
 
+    //Déclaration du timer
+    private Timer timer = new Timer();
+
     private MediaPlayer mpSoundEffect = null;
+
+    private Boolean timerActivation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +62,12 @@ public class game extends AppCompatActivity {
         this.choiceStatusImage = (ImageView) findViewById(R.id.choiceStatusImage);
         this.choiceStatusText = (TextView) findViewById(R.id.choiceStatusText);
         this.pseudoTextView = (TextView) findViewById(R.id.userName);
+        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        this.temps = (EditText) findViewById(R.id.editText5);
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
+
+
 
         // Get the player pseudo from shar.
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -66,10 +86,13 @@ public class game extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+
         super.onStart();
+        timer.execute();
 
         // Assign an image to each cards.
         if(!cardsSetUp)setUpCards();
+
     }
 
     /**
@@ -239,11 +262,12 @@ public class game extends AppCompatActivity {
      */
     private void gameWon(){
 
-        // FORTEST
-        gameTime = 100;
-
         // Create a winner modal.
-        setUpModal("Victoire !", R.drawable.rabbid_success);
+
+        timer.cancel(true);
+        temps.setText(""+timer.getCurrentTime());
+
+        //setUpModal("Victoire !", R.drawable.rabbid_success);
 
         // Play win sound.
         playSoundEffect(R.raw.win_sound);
@@ -258,14 +282,18 @@ public class game extends AppCompatActivity {
     private void gameLost(){
 
         // Create a lose modal.
-        setUpModal("Défaite !", R.drawable.rabbid_lose);
 
-        // Play lose sound.
-        playSoundEffect(R.raw.lose_sound);
+        temps.setText(""+timer.getCurrentTime());
+            //setUpModal("Défaite !", R.drawable.rabbid_lose);
 
-        // Save statistics.
-        saveStats(false);
-    }
+            // Play lose sound.
+            playSoundEffect(R.raw.lose_sound);
+
+            // Save statistics.
+            saveStats(false);
+        }
+
+
 
     /**
      * Set up the modal at the end of the game.
@@ -345,5 +373,48 @@ public class game extends AppCompatActivity {
         }
 
         //String.format("%02d:%02d", pTime / 60, pTime % 60);
+    }
+
+    private class Timer extends AsyncTask<Void, Integer, Void> {
+
+
+        @Override
+         protected void onPreExecute() {
+             progressBar.setProgress(0);
+         }
+         @Override
+         protected void onProgressUpdate(Integer... values) {
+             super.onProgressUpdate(values);
+             progressBar.setProgress(values[0]);
+
+         }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i <= 100; i++) {
+
+                if(this.isCancelled())
+                    break;
+                try {
+                    Thread.sleep(gameTime);
+                    currentTime = ((400*i)/100)/10;
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                publishProgress(i);
+            }
+            return null;
+        }
+
+        public int getCurrentTime(){
+            return currentTime;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            super.onPostExecute(result);
+            gameLost();
+        }
     }
 }
