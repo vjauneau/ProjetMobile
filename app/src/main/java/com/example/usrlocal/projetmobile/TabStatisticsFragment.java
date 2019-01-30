@@ -1,13 +1,16 @@
 package com.example.usrlocal.projetmobile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,9 +21,14 @@ import java.util.Arrays;
 
 public class TabStatisticsFragment extends Fragment {
 
-    private int gameSize = 0;
     private TextView gameSizeText = null;
     private View view;
+
+    private ImageView difficultyIcon = null;
+    private TextView pseudoText = null;
+    private TextView bestTimeText = null;
+    private TextView nbGamesText = null;
+    private TextView perCentWinText = null;
 
     public TabStatisticsFragment() {
         // Required empty public constructor
@@ -52,8 +60,12 @@ public class TabStatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tab_statistics, container, false);
-        this.gameSizeText = (TextView) view.findViewById(R.id.gameSize);
-        this.gameSizeText.setText(String.valueOf(getGameSize()));
+
+        this.difficultyIcon = (ImageView) view.findViewById(R.id.difficultyIcon);
+        this.pseudoText = (TextView) view.findViewById(R.id.pseudo);
+        this.bestTimeText = (TextView) view.findViewById(R.id.bestTime);
+        this.nbGamesText = (TextView) view.findViewById(R.id.gamePlayed);
+        this.perCentWinText = (TextView) view.findViewById(R.id.perCentWin);
 
         return view;
     }
@@ -61,5 +73,46 @@ public class TabStatisticsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        String pseudo;
+        int gameSize = getGameSize();
+
+        // Score board
+        SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        pseudo = generalPreferences.getString("PSEUDO","invité");
+
+        // User preferences.
+        SharedPreferences userPreferences = getActivity().getSharedPreferences(pseudo, Context.MODE_PRIVATE);
+
+        // Set difficulty icon.
+        switch (getGameSize()) {
+            case 8:
+                this.difficultyIcon.setImageResource(R.drawable.easy);
+                break;
+            case 12:
+                this.difficultyIcon.setImageResource(R.drawable.medium);
+                break;
+            case 16:
+                this.difficultyIcon.setImageResource(R.drawable.hard);
+                break;
+        }
+
+        // Set player name.
+        this.pseudoText.setText(pseudo);
+
+        // Set player statistics.
+        int gameWON = userPreferences.getInt("nbGameWON" + String.valueOf(gameSize), 0);
+        int gameLOST = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
+        int nbGames = gameLOST + gameWON;
+        this.nbGamesText.setText("Parties jouées : " + String.valueOf(nbGames));
+
+        if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100) + "% de victoire");
+        else this.perCentWinText.setText("--%");
+
+        // Set player best time.
+        int bestTime = userPreferences.getInt("bestTime" + String.valueOf(gameSize), 0);
+
+        if(bestTime != 0)this.bestTimeText.setText(String.valueOf(bestTime) + " secondes");
+        else this.bestTimeText.setText("Aucun temps");
     }
 }

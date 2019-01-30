@@ -195,6 +195,7 @@ public class MenuActivity extends AppCompatActivity {
                 break;
         }
         startActivity(intentStat);
+        this.finish();
 
         return super.onOptionsItemSelected(item);
     }
