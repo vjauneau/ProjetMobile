@@ -50,13 +50,12 @@ public class game extends AppCompatActivity {
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
 
-        // Get the player pseudo from shar.
+        // Get the player pseudo from share preferences.
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        userName = preferences.getString("PSEUDO",null);
+        userName = preferences.getString("PSEUDO","invité");
 
         // Display the player pseudo.
-        if(userName != null) pseudoTextView.setText("Joueur : " + userName);
-        else pseudoTextView.setText("Joueur : Invité");
+        pseudoTextView.setText("Joueur : " + userName);
 
         // Get the game size and create the cards.
         Intent intent = getIntent();

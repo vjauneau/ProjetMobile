@@ -80,7 +80,7 @@ public class TabStatisticsFragment extends Fragment {
 
         // Score board
         SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        pseudo = generalPreferences.getString("PSEUDO",null);
+        pseudo = generalPreferences.getString("PSEUDO","invité");
 
         // User preferences.
         SharedPreferences userPreferences = getActivity().getSharedPreferences(pseudo, Context.MODE_PRIVATE);
@@ -105,7 +105,12 @@ public class TabStatisticsFragment extends Fragment {
         int gameWON = userPreferences.getInt("nbGameWON" + String.valueOf(gameSize), 0);
         int gameLOST = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
         int nbGames = gameLOST + gameWON;
-        this.nbGamesText.setText(String.valueOf(nbGames));
+        this.nbGamesText.setText("Parties jouées : " + String.valueOf(nbGames));
         if(nbGames != 0)this.perCentWinText.setText(String.valueOf((gameWON/nbGames) * 100) + "%");
+        else this.perCentWinText.setText("Aucune partie jouée");
+
+        int bestTime = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
+        if(bestTime != 0)this.perCentWinText.setText(String.valueOf(bestTime) + " secondes");
+        else this.bestTimeText.setText("Aucun temps");
     }
 }
