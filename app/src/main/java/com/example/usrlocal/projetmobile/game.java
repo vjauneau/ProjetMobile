@@ -41,7 +41,7 @@ public class game extends AppCompatActivity {
     private ArrayList<cardFragment> listShownCards = null;
 
     //Déclaration du timer
-    private Timer timer = new Timer();
+    private Timer timer = null;
 
     private MediaPlayer mpSoundEffect = null;
 
@@ -60,11 +60,7 @@ public class game extends AppCompatActivity {
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
 
-
-        // Get the player pseudo from shar.
-
         // Get the player pseudo from share preferences.
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userName = preferences.getString("PSEUDO","invité");
 
@@ -82,11 +78,22 @@ public class game extends AppCompatActivity {
     protected void onStart() {
 
         super.onStart();
-        timer.execute();
+
+        // Start the time
+        if(timer == null){
+            timer = new Timer();
+            timer.execute();
+        }
+
+        // Stop the timer and leave the activity.
+        else{
+            timer.cancel(true);
+            startActivity(new Intent(game.this, MenuActivity.class));
+            finish();
+        }
 
         // Assign an image to each cards.
         if(!cardsSetUp)setUpCards();
-
     }
 
     /**
@@ -135,9 +142,7 @@ public class game extends AppCompatActivity {
     public void cardNotificationClicked(cardFragment card){
 
         card.show();
-
         cardFragment card0;
-        cardFragment card1;
 
         switch(listShownCards.size()) {
 
@@ -256,13 +261,10 @@ public class game extends AppCompatActivity {
      */
     private void gameWon(){
 
-        //Timer Stop
+        // Stop the timer.
         timer.cancel(true);
 
-        //Time recovering
-
-        // Pour test ! ;)
-        //temps.setText(""+timer.getCurrentTime());
+        // Recover the timer time.
         newTime = timer.getCurrentTime();
 
         // Create a winner modal.
@@ -358,7 +360,7 @@ public class game extends AppCompatActivity {
 
         SharedPreferences generalPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        // Get place place of the score in the score board.
+        // Get the place of the current score in the score board.
         for(int i=1; i<=5; i++){
             int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
             String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
@@ -367,14 +369,19 @@ public class game extends AppCompatActivity {
             top5players.add(player);
         }
 
-        top5scores.add(scorePosition, newTime);
-        top5players.add(scorePosition, userName);
+        // Current score in score board.
+        if(scorePosition != 0){
 
-        // Update the score board.
-        for(int i=1; i<=5; i++){
-            if(top5players.get(i) != null){
-                generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i)).apply();
-                generalPreferences.edit().putString("player" + String.valueOf(i) + "_game" + gameSize, top5players.get(i)).apply();
+            // Put the current score at the right place.
+            top5scores.add(scorePosition, newTime);
+            top5players.add(scorePosition, userName);
+
+            // Update the score board.
+            for(int i=1; i<=5; i++){
+                if(top5players.get(i) != null){
+                    generalPreferences.edit().putInt("time" + String.valueOf(i) + "_game" + gameSize, top5scores.get(i)).apply();
+                    generalPreferences.edit().putString("player" + String.valueOf(i) + "_game" + gameSize, top5players.get(i)).apply();
+                }
             }
         }
     }
@@ -384,20 +391,27 @@ public class game extends AppCompatActivity {
      */
     private class Timer extends AsyncTask<Void, Integer, Void> {
 
-        // progressBar initialisation
+        /**
+         * progressBar initialisation.
+         */
         @Override
          protected void onPreExecute() {
              progressBar.setProgress(0);
          }
 
-         // Function to print progressBar evolution
+        /**
+         * Update the progressBar according to the time.
+         * @param values : values return by the timer.
+         */
          @Override
          protected void onProgressUpdate(Integer... values) {
              super.onProgressUpdate(values);
              progressBar.setProgress(values[0]);
          }
 
-         // Timer (40s)
+        /**
+         * Process timer (40 seconds).
+         */
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i <= 100; i++) {
@@ -417,11 +431,17 @@ public class game extends AppCompatActivity {
             return null;
         }
 
+        /**
+         * Return the current time.
+         * @return
+         */
         public int getCurrentTime(){
             return currentTime;
         }
 
-        // When time is over.
+        /**
+         * End the game when the time is completed.
+         */
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);

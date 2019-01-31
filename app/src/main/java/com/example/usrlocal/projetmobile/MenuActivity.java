@@ -20,16 +20,13 @@ import java.util.List;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private Intent intentStat = null;
-    private Intent intentTopBoard = null;
-
     private Button btnSimple = null;
     private Button btnMedium = null;
     private Button btnDifficult = null;
     private Button btnPlay = null;
     private List<Button> ListbtnDifficulty;
 
-    private int difficulty = 0;
+    private int difficulty;
 
     private Button btnSavePseudo = null;
     private EditText etPseudo = null;
@@ -44,11 +41,10 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
-        if (toolbar != null)
-        {
-            setSupportActionBar(toolbar);
-        }
+        if (toolbar != null)setSupportActionBar(toolbar);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ListbtnDifficulty = new ArrayList<>();
@@ -65,6 +61,10 @@ public class MenuActivity extends AppCompatActivity {
 
         etPseudo = (EditText) findViewById(R.id.etPseudo);
         tvBjr = (TextView) findViewById(R.id.tvBjr);
+
+        difficulty = 2;
+        btnMedium.setSelected(true);
+        selectYourDifficultyLevel();
 
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +99,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        // Launch the game according to the selected difficulty.
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,43 +113,43 @@ public class MenuActivity extends AppCompatActivity {
                 case 3:
                     launchGame(16);
                     break;
-
-               /* case 0:
-                    Toast.makeText(MenuActivity., "Veuillez choisir un niveau de difficulté", Toast.LENGTH_LONG).show();*/
             }
         }
         });
 
+        // Save the player pseudo from the editText.
         btnSavePseudo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //si l'ET n'est pas vide on récupère le pseudo.
+                @Override
+                public void onClick(View view) {
                 if (etPseudo.getText() != null) {
                     String pseudo = etPseudo.getText().toString();
                     setPlayerPseudo(pseudo);
                 }
-
                 updatePseudoDisplay();
             }
         });
     }
 
+    /**
+     * Update the display of the pseudo.
+     */
     @Override
     protected void onStart() {
         super.onStart();
-
         updatePseudoDisplay();
     }
 
+    /**
+     * Update the pseudo textView.
+     */
     private void updatePseudoDisplay(){
         String pseudo = this.preferences.getString("PSEUDO",null);
-        if(pseudo != null) {
-            Toast.makeText(getApplicationContext(), "Bonjour "+ pseudo, Toast.LENGTH_SHORT).show();
-            tvBjr.setText("Bonjour : " + pseudo);
-        }
+        if(pseudo != null) tvBjr.setText("Bonjour " + pseudo);
     }
 
+    /**
+     * Set the user pseudo in shared preferences.
+     */
     private void setPlayerPseudo(String pseudo){
         SharedPreferences.Editor editor = this.preferences.edit();
         editor.putString("PSEUDO", pseudo);
@@ -156,14 +157,14 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     /**
-     * Lors du lancement de la partie si un pseudo est tapé on le recupère sinon on set attribue la valeur guest
-     * @param taille
+     * Lors du lancement de la partie si un pseudo est tapé on le recupère sinon on set attribue la valeur guest.
+     * @param taille : number of cards in the game.
      */
-    protected void launchGame(int taille) {
+    private void launchGame(int taille) {
 
         // Default player.
         if(this.preferences.getString("PSEUDO",null)==null) {
-            setPlayerPseudo("Invite");
+            setPlayerPseudo("Invité");
         }
 
         // Reset the existing Media Player.
@@ -178,11 +179,15 @@ public class MenuActivity extends AppCompatActivity {
         Intent intentGame = null;
 
         intentGame = new Intent(MenuActivity.this, game.class);
-        intentGame.putExtra("taille",taille);
+        intentGame.putExtra("taille", taille);
         startActivity(intentGame);
+        this.finish();
     }
 
-    protected void selectYourDifficultyLevel(){
+    /**
+     * Set the style of the selected difficulty level button.
+     */
+    private void selectYourDifficultyLevel(){
         for(Button b : ListbtnDifficulty){
             if(b.isSelected())b.setTextColor(Color.RED);
             else b.setTextColor(Color.BLACK);
@@ -197,17 +202,21 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     public  boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent intent = null;
+
         switch (item.getItemId()) {
 
             case R.id.action_stats:
-                intentStat = new Intent(MenuActivity.this, StatisticActivity.class);
+                intent = new Intent(MenuActivity.this, StatisticActivity.class);
                 break;
 
             case R.id.action_topBoard:
-                intentStat = new Intent(MenuActivity.this, HistoriqueActivity.class);
+                intent = new Intent(MenuActivity.this, HistoriqueActivity.class);
                 break;
         }
-        startActivity(intentStat);
+
+        startActivity(intent);
         this.finish();
 
         return super.onOptionsItemSelected(item);
