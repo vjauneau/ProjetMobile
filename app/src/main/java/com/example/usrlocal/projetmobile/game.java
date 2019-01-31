@@ -3,14 +3,12 @@ package com.example.usrlocal.projetmobile;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,11 +32,9 @@ public class game extends AppCompatActivity {
     private TextView choiceStatusText = null;
     private TextView pseudoTextView = null;
     private int currentTime;
-    private int newBestTime;
+    private int newTime;
 
     private Boolean end = false;
-
-    private EditText temps = null;
 
     private ProgressBar progressBar = null;
     private ArrayList<cardFragment> listCards = null;
@@ -62,7 +57,6 @@ public class game extends AppCompatActivity {
         this.choiceStatusText = (TextView) findViewById(R.id.choiceStatusText);
         this.pseudoTextView = (TextView) findViewById(R.id.userName);
         this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        this.temps = (EditText) findViewById(R.id.editText5);
         this.listCards = new ArrayList<>();
         this.listShownCards = new ArrayList<>();
 
@@ -269,9 +263,7 @@ public class game extends AppCompatActivity {
 
         // Pour test ! ;)
         //temps.setText(""+timer.getCurrentTime());
-
-        newBestTime = timer.getCurrentTime();
-
+        newTime = timer.getCurrentTime();
 
         // Create a winner modal.
         setUpModal("Victoire !", R.drawable.rabbid_success);
@@ -289,7 +281,6 @@ public class game extends AppCompatActivity {
     private void gameLost(){
 
         // Create a lose modal.
-
         setUpModal("Défaite !", R.drawable.rabbid_lose);
 
         // Play lose sound.
@@ -297,9 +288,7 @@ public class game extends AppCompatActivity {
 
         // Save statistics.
         saveStats(false);
-        }
-
-
+    }
 
     /**
      * Set up the modal at the end of the game.
@@ -347,7 +336,7 @@ public class game extends AppCompatActivity {
 
             // Save user best time.
             int bestTime = userPreferences.getInt("bestTime" + gameSize, 10000);
-            if(newBestTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, newBestTime).apply();
+            if(newTime < bestTime)userPreferences.edit().putInt("bestTime" + gameSize, newTime).apply();
 
             // Save the score in score board.
             saveScoreBoard();
@@ -373,12 +362,12 @@ public class game extends AppCompatActivity {
         for(int i=1; i<=5; i++){
             int scoreTime = generalPreferences.getInt("time" + String.valueOf(i) + "_game" + gameSize, 10000);
             String player = generalPreferences.getString("player" + String.valueOf(i) + "_game" + gameSize, null);
-            if(newBestTime < scoreTime)scorePosition = i;
+            if(newTime < scoreTime)scorePosition = i;
             top5scores.add(scoreTime);
             top5players.add(player);
         }
 
-        top5scores.add(scorePosition, newBestTime);
+        top5scores.add(scorePosition, newTime);
         top5players.add(scorePosition, userName);
 
         // Update the score board.
@@ -395,25 +384,23 @@ public class game extends AppCompatActivity {
      */
     private class Timer extends AsyncTask<Void, Integer, Void> {
 
-        //progressBar initialisation
+        // progressBar initialisation
         @Override
          protected void onPreExecute() {
              progressBar.setProgress(0);
          }
 
-         //Function to print progressBar evolution
+         // Function to print progressBar evolution
          @Override
          protected void onProgressUpdate(Integer... values) {
              super.onProgressUpdate(values);
              progressBar.setProgress(values[0]);
-
          }
 
-         //Timer (40s)
+         // Timer (40s)
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i <= 100; i++) {
-
                 if(this.isCancelled())
                     break;
                 try {
@@ -434,10 +421,9 @@ public class game extends AppCompatActivity {
             return currentTime;
         }
 
-        //When time is over
+        // When time is over.
         @Override
         protected void onPostExecute(Void result) {
-
             super.onPostExecute(result);
             gameLost();
         }

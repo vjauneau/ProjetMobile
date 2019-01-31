@@ -102,7 +102,7 @@ public class TabStatisticsFragment extends Fragment {
 
         // Set player statistics.
         int gameWON = userPreferences.getInt("nbGameWON" + String.valueOf(gameSize), 0);
-        int gameLOST = userPreferences.getInt("nbGameLOST" + String.valueOf(gameSize), 0);
+        int gameLOST = userPreferences.getInt("nbGameLost" + String.valueOf(gameSize), 0);
         int nbGames = gameLOST + gameWON;
         this.nbGamesText.setText("Parties jouées : " + String.valueOf(nbGames));
 

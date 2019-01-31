@@ -3,6 +3,7 @@ package com.example.usrlocal.projetmobile;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class MenuActivity extends AppCompatActivity {
     private TextView tvBjr = null;
 
     private SharedPreferences preferences;
+
+    private MediaPlayer mpSoundEffect = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +165,16 @@ public class MenuActivity extends AppCompatActivity {
         if(this.preferences.getString("PSEUDO",null)==null) {
             setPlayerPseudo("Invite");
         }
+
+        // Reset the existing Media Player.
+        if (mpSoundEffect != null) {
+            mpSoundEffect.reset();
+            mpSoundEffect.release();
+        }
+        // Change the sound effect and play it.
+        mpSoundEffect = MediaPlayer.create(this, R.raw.entry_02);
+        mpSoundEffect.start();
+
         Intent intentGame = null;
 
         intentGame = new Intent(MenuActivity.this, game.class);
