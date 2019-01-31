@@ -38,7 +38,8 @@ public class HistoriqueActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar, menu);
-        menu.findItem(R.id.action_topBoard).setIcon(R.drawable.menu_mobile);
+        menu.findItem(R.id.action_stats).setIcon(R.drawable.menu_mobile);
+        menu.findItem(R.id.action_topBoard).setIcon(R.drawable.stats_icon);
 
         return true;
     }
@@ -50,11 +51,11 @@ public class HistoriqueActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
-            case R.id.action_stats:
+            case R.id.action_topBoard:
                 intentStat = new Intent(HistoriqueActivity.this, StatisticActivity.class);
                 break;
 
-            case R.id.action_topBoard:
+            case R.id.action_stats:
                 intentStat = new Intent(HistoriqueActivity.this, MenuActivity.class);
                 break;
         }

@@ -80,14 +80,14 @@ public class game extends AppCompatActivity {
         super.onStart();
 
         // Start the time
-        if(timer == null){
-            timer = new Timer();
-            timer.execute();
+        if(this.timer == null){
+            this.timer = new Timer();
+            this.timer.execute();
         }
 
         // Stop the timer and leave the activity.
         else{
-            timer.cancel(true);
+            this.timer.cancel(true);
             startActivity(new Intent(game.this, MenuActivity.class));
             finish();
         }
